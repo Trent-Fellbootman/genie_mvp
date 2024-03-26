@@ -2,8 +2,11 @@ import 'package:flutter/foundation.dart';
 
 import 'data_item.dart';
 
-class ListData extends ChangeNotifier {
-  final List<DataItem> _list = [];
+/// An array of data items with the same type.
+class ArrayData extends ChangeNotifier {
+  ArrayData({List<DataItem>? list, required this.itemType}) : _list = list ?? <DataItem>[];
+  final List<DataItem> _list;
+  final DataItemType itemType;
 
   DataItem? getValue(int index) {
     if (index < 0 || index >= _list.length) {
@@ -22,6 +25,10 @@ class ListData extends ChangeNotifier {
   }
 
   void insert(int index, DataItem item) {
+    if (item.dataItemType != itemType) {
+      throw Exception("Attempting to insert an item of type ${item.dataItemType} into an array of type $itemType");
+    }
+
     if (index < 0 || index > _list.length) {
       return;
     }

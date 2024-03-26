@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class StringData extends ChangeNotifier {
-  StringData({required String data}) : _value = data;
+  StringData({String? data}) : _value = data ?? "";
 
   String _value;
 

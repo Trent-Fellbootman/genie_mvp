@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:genie_mvp/data_models/string_data.dart';
-import 'package:genie_mvp/ui/data_input_widgets/string_input_widget.dart';
+import 'package:genie_mvp/data_models/array_data.dart';
+import 'package:genie_mvp/data_models/data_item.dart';
+import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
+import 'package:genie_mvp/ui/data_input_widgets/array_input_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,13 +37,18 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          children: [
-            StringInputWidget(
-              stringDataInstance: StringData(data: ""),
-            )
-          ],
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 255, 0, 255),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(16.0),
+          color: const Color.fromARGB(255, 255, 0, 0),
+          child: ArrayInputWidget(
+            arrayDataInstance: ArrayData(
+                list: [],
+                itemType:
+                    DataItemType(basicDataItemType: BasicDataItemType.string)),
+          ),
         ),
       ),
     );
