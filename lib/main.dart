@@ -45,7 +45,12 @@ class MyApp extends StatelessWidget {
           color: const Color.fromARGB(255, 255, 0, 0),
           child: ArrayInputWidget(
             arrayDataInstance: ArrayData(
-                list: [],
+                list: [
+                  DataItem(
+                      dataItemType: DataItemType(
+                          basicDataItemType: BasicDataItemType.string),
+                      stringData: StringData(data: "hello")),
+                ],
                 itemType:
                     DataItemType(basicDataItemType: BasicDataItemType.string)),
           ),

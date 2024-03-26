@@ -27,6 +27,14 @@ class DataItemType {
 
   @override
   int get hashCode => basicDataItemType.hashCode ^ arrayAuxiliaryTypeData.hashCode;
+
+  @override
+  String toString() {
+    return """DataItemType(
+    basicDataItemType: $basicDataItemType,
+    arrayAuxiliaryTypeData: $arrayAuxiliaryTypeData
+)""";
+  }
 }
 
 class DataItem extends ChangeNotifier {
@@ -47,6 +55,16 @@ class DataItem extends ChangeNotifier {
             itemType: dataItemType.arrayAuxiliaryTypeData!.itemType,
           ),
         );
+    }
+  }
+
+  @override
+  String toString() {
+    switch (dataItemType.basicDataItemType) {
+      case BasicDataItemType.string:
+        return 'DataItem::String(${stringData!})';
+      case BasicDataItemType.array:
+        return 'DataItem::Array<${dataItemType.arrayAuxiliaryTypeData!.itemType}>(${arrayData!})';
     }
   }
 }

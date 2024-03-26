@@ -11,4 +11,7 @@ class StringData extends ChangeNotifier {
     _value = value;
     notifyListeners();
   }
+
+  @override
+  String toString() => 'StringData($_value)';
 }

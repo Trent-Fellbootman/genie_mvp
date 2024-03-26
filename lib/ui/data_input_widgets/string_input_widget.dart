@@ -13,7 +13,8 @@ class StringInputWidget extends StatelessWidget {
     return ChangeNotifierProvider<StringData>.value(
       value: stringDataInstance,
       child: Consumer<StringData>(
-        builder: (context, string, child) => TextField(
+        builder: (context, string, child) => TextFormField(
+          initialValue: string.data,
           onChanged: (value) {
             string.data = value;
           },

@@ -38,4 +38,7 @@ class ArrayData extends ChangeNotifier {
   }
 
   int get length => _list.length;
+
+  @override
+  String toString() => _list.toString();
 }
