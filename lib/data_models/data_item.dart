@@ -1,10 +1,12 @@
+import 'package:flutter/foundation.dart';
+
 import 'string_data.dart';
 import 'list_data.dart';
 
-enum DataItemType { string }
+enum DataItemType { string, list }
 
-class DataItem {
-  DataItem({required this.dataItemType, this.stringData});
+class DataItem extends ChangeNotifier {
+  DataItem({required this.dataItemType, this.stringData, this.listData});
 
   final DataItemType dataItemType;
   StringData? stringData;
