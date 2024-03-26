@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:genie_mvp/data_models/named_tuple.dart';
 import 'package:genie_mvp/data_models/string_data.dart';
 import 'package:genie_mvp/data_models/array_data.dart';
 import 'package:genie_mvp/data_models/data_item.dart';
 import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/data_input_widgets/array_input_widget.dart';
+import 'package:genie_mvp/ui/data_input_widgets/named_tuple_input_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,16 +45,120 @@ class MyApp extends StatelessWidget {
         body: Container(
           padding: const EdgeInsets.all(16.0),
           color: const Color.fromARGB(255, 255, 0, 0),
-          child: ArrayInputWidget(
-            arrayDataInstance: ArrayData(
-                list: [
-                  DataItem(
+          child: DataItemInputWidget(
+            dataItem: DataItem(
+                dataItemType: DataItemType(
+                    basicDataItemType: BasicDataItemType.namedTuple,
+                    namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
+                      elementTypeConfig: {
+                        "value 1": DataItemType(
+                          basicDataItemType: BasicDataItemType.array,
+                          arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+                            itemType: DataItemType(
+                                basicDataItemType: BasicDataItemType.namedTuple,
+                                namedTupleAuxiliaryTypeData:
+                                    NamedTupleAuxiliaryTypeData(
+                                        elementTypeConfig: {
+                                      "value 1": DataItemType(
+                                        basicDataItemType:
+                                            BasicDataItemType.string,
+                                      ),
+                                      "value 2": DataItemType(
+                                          basicDataItemType:
+                                              BasicDataItemType.array,
+                                          arrayAuxiliaryTypeData:
+                                              ArrayAuxiliaryTypeData(
+                                                  itemType: DataItemType(
+                                                      basicDataItemType:
+                                                          BasicDataItemType
+                                                              .string)))
+                                    })),
+                          ),
+                        ),
+                        "value 2": DataItemType(
+                          basicDataItemType: BasicDataItemType.string,
+                        )
+                      },
+                    )),
+                namedTupleData: NamedTupleData(elementTypeConfig: {
+                  "value 1": DataItemType(
+                      basicDataItemType: BasicDataItemType.array,
+                      arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+                          itemType: DataItemType(
+                              basicDataItemType: BasicDataItemType.namedTuple,
+                              namedTupleAuxiliaryTypeData:
+                                  NamedTupleAuxiliaryTypeData(
+                                      elementTypeConfig: {
+                                    "value 1": DataItemType(
+                                      basicDataItemType:
+                                          BasicDataItemType.string,
+                                    ),
+                                    "value 2": DataItemType(
+                                        basicDataItemType:
+                                            BasicDataItemType.array,
+                                        arrayAuxiliaryTypeData:
+                                            ArrayAuxiliaryTypeData(
+                                                itemType: DataItemType(
+                                                    basicDataItemType:
+                                                        BasicDataItemType
+                                                            .string)))
+                                  })))),
+                  "value 2": DataItemType(
+                    basicDataItemType: BasicDataItemType.string,
+                  )
+                }, elements: {
+                  "value 1": DataItem(
+                      dataItemType: DataItemType(
+                          basicDataItemType: BasicDataItemType.array,
+                          arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+                              itemType: DataItemType(
+                                  basicDataItemType:
+                                      BasicDataItemType.namedTuple,
+                                  namedTupleAuxiliaryTypeData:
+                                      NamedTupleAuxiliaryTypeData(
+                                          elementTypeConfig: {
+                                        "value 1": DataItemType(
+                                          basicDataItemType:
+                                              BasicDataItemType.string,
+                                        ),
+                                        "value 2": DataItemType(
+                                            basicDataItemType:
+                                                BasicDataItemType.array,
+                                            arrayAuxiliaryTypeData:
+                                                ArrayAuxiliaryTypeData(
+                                                    itemType: DataItemType(
+                                                        basicDataItemType:
+                                                            BasicDataItemType
+                                                                .string)))
+                                      })))),
+                      arrayData: ArrayData(
+                          list: [],
+                          itemType: DataItemType(
+                              basicDataItemType:
+                              BasicDataItemType.namedTuple,
+                              namedTupleAuxiliaryTypeData:
+                              NamedTupleAuxiliaryTypeData(
+                                  elementTypeConfig: {
+                                    "value 1": DataItemType(
+                                      basicDataItemType:
+                                      BasicDataItemType.string,
+                                    ),
+                                    "value 2": DataItemType(
+                                        basicDataItemType:
+                                        BasicDataItemType.array,
+                                        arrayAuxiliaryTypeData:
+                                        ArrayAuxiliaryTypeData(
+                                            itemType: DataItemType(
+                                                basicDataItemType:
+                                                BasicDataItemType
+                                                    .string)))
+                                  }))
+                      )),
+                  "value 2": DataItem(
                       dataItemType: DataItemType(
                           basicDataItemType: BasicDataItemType.string),
-                      stringData: StringData(data: "hello")),
-                ],
-                itemType:
-                    DataItemType(basicDataItemType: BasicDataItemType.string)),
+                      stringData: StringData(data: "world"))
+                })),
           ),
         ),
       ),

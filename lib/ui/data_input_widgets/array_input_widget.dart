@@ -26,7 +26,12 @@ class ArrayInputWidget extends StatelessWidget {
                   DataItem dataItem = listData.getValue(index)!;
                   return Row(key: ValueKey(dataItem), children: [
                     const Icon(Icons.drag_handle),
-                    Expanded(child: DataItemInputWidget(dataItem: dataItem)),
+                    Expanded(
+                        child: ExpansionTile(
+                            title: Text("Item $index"),
+                            children: <Widget>[
+                          DataItemInputWidget(dataItem: dataItem)
+                        ])),
                     IconButton(
                       onPressed: () {
                         listData.remove(index);

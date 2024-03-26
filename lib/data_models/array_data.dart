@@ -42,3 +42,9 @@ class ArrayData extends ChangeNotifier {
   @override
   String toString() => _list.toString();
 }
+
+class ArrayAuxiliaryTypeData {
+  ArrayAuxiliaryTypeData({required this.itemType});
+
+  final DataItemType itemType;
+}

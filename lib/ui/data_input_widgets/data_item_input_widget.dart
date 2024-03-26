@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genie_mvp/data_models/data_item.dart';
+import 'package:genie_mvp/ui/data_input_widgets/named_tuple_input_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'string_input_widget.dart';
@@ -22,6 +23,9 @@ class DataItemInputWidget extends StatelessWidget {
                   stringDataInstance: dataItem.stringData!);
             case BasicDataItemType.array:
               return ArrayInputWidget(arrayDataInstance: dataItem.arrayData!);
+            case BasicDataItemType.namedTuple:
+              return NamedTupleInputWidget(
+                  namedTupleDataInstance: dataItem.namedTupleData!);
           }
         },
       ),
