@@ -20,9 +20,12 @@ class NamedTupleInputWidget extends StatelessWidget {
           for (var element in namedTupleData.elements.entries) {
             String key = element.key;
             DataItem dataItem = element.value;
-            children.add(ExpansionTile(
-                title: Text(key),
-                children: [DataItemInputWidget(dataItem: dataItem)]));
+            children.add(ExpansionTile(title: Text(key), children: [
+              Card(
+                elevation: 4,
+                child: DataItemInputWidget(dataItem: dataItem),
+              )
+            ]));
           }
           return ListView(
             shrinkWrap: true,

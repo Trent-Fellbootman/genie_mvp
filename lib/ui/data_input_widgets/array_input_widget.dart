@@ -29,8 +29,11 @@ class ArrayInputWidget extends StatelessWidget {
                     Expanded(
                         child: ExpansionTile(
                             title: Text("Item $index"),
-                            children: <Widget>[
-                          DataItemInputWidget(dataItem: dataItem)
+                            children: [
+                          Card(
+                            elevation: 4,
+                            child: DataItemInputWidget(dataItem: dataItem),
+                          )
                         ])),
                     IconButton(
                       onPressed: () {
