@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:genie_mvp/data_models/named_tuple.dart';
-import 'package:genie_mvp/data_models/data_item.dart';
+import 'package:genie_mvp/data_models/data_items/named_tuple.dart';
+import 'package:genie_mvp/data_models/data_items/data_item.dart';
 import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
 import 'package:provider/provider.dart';
 

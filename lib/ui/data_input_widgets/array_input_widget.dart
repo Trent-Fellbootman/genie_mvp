@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:genie_mvp/data_models/array_data.dart';
-import 'package:genie_mvp/data_models/data_item.dart';
+import 'package:genie_mvp/data_models/data_items/array_data.dart';
+import 'package:genie_mvp/data_models/data_items/data_item.dart';
 import 'data_item_input_widget.dart';
 
 /// An array input widget is used for inputting a variable-sized array containing same type of data items.

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:genie_mvp/data_models/named_tuple.dart';
+import 'named_tuple.dart';
 
 import 'string_data.dart';
 import 'array_data.dart';

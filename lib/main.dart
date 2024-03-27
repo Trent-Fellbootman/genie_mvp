@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:genie_mvp/data_models/named_tuple.dart';
-import 'package:genie_mvp/data_models/string_data.dart';
-import 'package:genie_mvp/data_models/array_data.dart';
-import 'package:genie_mvp/data_models/data_item.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:genie_mvp/data_models/data_items/named_tuple.dart';
+import 'package:genie_mvp/data_models/data_items/string_data.dart';
+import 'package:genie_mvp/data_models/data_items/array_data.dart';
+import 'package:genie_mvp/data_models/data_items/data_item.dart';
+import 'package:genie_mvp/data_models/mini_app_specification_data.dart';
+import 'package:genie_mvp/data_models/primitives/integer_data.dart';
 import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/data_input_widgets/array_input_widget.dart';
 import 'package:genie_mvp/ui/data_input_widgets/named_tuple_input_widget.dart';
+import 'package:genie_mvp/ui/mini_app_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,122 +48,159 @@ class MyApp extends StatelessWidget {
         ),
         body: Container(
           padding: const EdgeInsets.all(16.0),
-          color: const Color.fromARGB(255, 255, 0, 0),
-          child: DataItemInputWidget(
-            dataItem: DataItem(
-                dataItemType: DataItemType(
-                    basicDataItemType: BasicDataItemType.namedTuple,
-                    namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
-                      elementTypeConfig: {
-                        "value 1": DataItemType(
-                          basicDataItemType: BasicDataItemType.array,
-                          arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
-                            itemType: DataItemType(
-                                basicDataItemType: BasicDataItemType.namedTuple,
-                                namedTupleAuxiliaryTypeData:
-                                    NamedTupleAuxiliaryTypeData(
-                                        elementTypeConfig: {
-                                      "value 1": DataItemType(
-                                        basicDataItemType:
-                                            BasicDataItemType.string,
-                                      ),
-                                      "value 2": DataItemType(
-                                          basicDataItemType:
-                                              BasicDataItemType.array,
-                                          arrayAuxiliaryTypeData:
-                                              ArrayAuxiliaryTypeData(
-                                                  itemType: DataItemType(
-                                                      basicDataItemType:
-                                                          BasicDataItemType
-                                                              .string)))
-                                    })),
-                          ),
-                        ),
-                        "value 2": DataItemType(
-                          basicDataItemType: BasicDataItemType.string,
-                        )
-                      },
-                    )),
-                namedTupleData: NamedTupleData(elementTypeConfig: {
-                  "value 1": DataItemType(
-                      basicDataItemType: BasicDataItemType.array,
-                      arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
-                          itemType: DataItemType(
-                              basicDataItemType: BasicDataItemType.namedTuple,
-                              namedTupleAuxiliaryTypeData:
-                                  NamedTupleAuxiliaryTypeData(
-                                      elementTypeConfig: {
-                                    "value 1": DataItemType(
-                                      basicDataItemType:
-                                          BasicDataItemType.string,
-                                    ),
-                                    "value 2": DataItemType(
-                                        basicDataItemType:
-                                            BasicDataItemType.array,
-                                        arrayAuxiliaryTypeData:
-                                            ArrayAuxiliaryTypeData(
-                                                itemType: DataItemType(
-                                                    basicDataItemType:
-                                                        BasicDataItemType
-                                                            .string)))
-                                  })))),
-                  "value 2": DataItemType(
+          child: MiniAppView(appSpecification: MiniAppSpecification(
+            inputOutputSpecification: MiniAppInputOutputSpecification(
+              inputTypeDeclaration: DataItemType(
+                basicDataItemType: BasicDataItemType.array,
+                arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+                  itemType: DataItemType(
                     basicDataItemType: BasicDataItemType.string,
                   )
-                }, elements: {
-                  "value 1": DataItem(
-                      dataItemType: DataItemType(
-                          basicDataItemType: BasicDataItemType.array,
-                          arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
-                              itemType: DataItemType(
-                                  basicDataItemType:
-                                      BasicDataItemType.namedTuple,
-                                  namedTupleAuxiliaryTypeData:
-                                      NamedTupleAuxiliaryTypeData(
-                                          elementTypeConfig: {
-                                        "value 1": DataItemType(
-                                          basicDataItemType:
-                                              BasicDataItemType.string,
-                                        ),
-                                        "value 2": DataItemType(
-                                            basicDataItemType:
-                                                BasicDataItemType.array,
-                                            arrayAuxiliaryTypeData:
-                                                ArrayAuxiliaryTypeData(
-                                                    itemType: DataItemType(
-                                                        basicDataItemType:
-                                                            BasicDataItemType
-                                                                .string)))
-                                      })))),
-                      arrayData: ArrayData(
-                          list: [],
-                          itemType: DataItemType(
-                              basicDataItemType:
-                              BasicDataItemType.namedTuple,
-                              namedTupleAuxiliaryTypeData:
-                              NamedTupleAuxiliaryTypeData(
-                                  elementTypeConfig: {
-                                    "value 1": DataItemType(
-                                      basicDataItemType:
-                                      BasicDataItemType.string,
-                                    ),
-                                    "value 2": DataItemType(
-                                        basicDataItemType:
-                                        BasicDataItemType.array,
-                                        arrayAuxiliaryTypeData:
-                                        ArrayAuxiliaryTypeData(
-                                            itemType: DataItemType(
-                                                basicDataItemType:
-                                                BasicDataItemType
-                                                    .string)))
-                                  }))
-                      )),
-                  "value 2": DataItem(
-                      dataItemType: DataItemType(
-                          basicDataItemType: BasicDataItemType.string),
-                      stringData: StringData(data: "world"))
-                })),
-          ),
+                )
+              ),
+              outputTypeDeclaration: DataItemType(
+                basicDataItemType: BasicDataItemType.string
+              ),
+            ),
+            metadata: MiniAppSpecificationMetadata(
+              name: "随机选择器",
+              description:
+"""随机选择器，选择困难症的福音！
+
+从输入的多个句子中随机选一个输出。
+""",
+              likes: IntegerData(value: 1),
+              dislikes: IntegerData(value: 0),
+            )
+          ),),
+//           child: const Markdown(
+//               data:
+// """# Koalas are so cute!
+//
+// ## Koalas are so adorable!
+//
+// test
+// test
+// test
+//
+// - Testing
+// - adorable
+// """),
+          // child: DataItemInputWidget(
+          //   dataItem: DataItem(
+          //       dataItemType: DataItemType(
+          //           basicDataItemType: BasicDataItemType.namedTuple,
+          //           namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
+          //             elementTypeConfig: {
+          //               "value 1": DataItemType(
+          //                 basicDataItemType: BasicDataItemType.array,
+          //                 arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+          //                   itemType: DataItemType(
+          //                       basicDataItemType: BasicDataItemType.namedTuple,
+          //                       namedTupleAuxiliaryTypeData:
+          //                           NamedTupleAuxiliaryTypeData(
+          //                               elementTypeConfig: {
+          //                             "value 1": DataItemType(
+          //                               basicDataItemType:
+          //                                   BasicDataItemType.string,
+          //                             ),
+          //                             "value 2": DataItemType(
+          //                                 basicDataItemType:
+          //                                     BasicDataItemType.array,
+          //                                 arrayAuxiliaryTypeData:
+          //                                     ArrayAuxiliaryTypeData(
+          //                                         itemType: DataItemType(
+          //                                             basicDataItemType:
+          //                                                 BasicDataItemType
+          //                                                     .string)))
+          //                           })),
+          //                 ),
+          //               ),
+          //               "value 2": DataItemType(
+          //                 basicDataItemType: BasicDataItemType.string,
+          //               )
+          //             },
+          //           )),
+          //       namedTupleData: NamedTupleData(elementTypeConfig: {
+          //         "value 1": DataItemType(
+          //             basicDataItemType: BasicDataItemType.array,
+          //             arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+          //                 itemType: DataItemType(
+          //                     basicDataItemType: BasicDataItemType.namedTuple,
+          //                     namedTupleAuxiliaryTypeData:
+          //                         NamedTupleAuxiliaryTypeData(
+          //                             elementTypeConfig: {
+          //                           "value 1": DataItemType(
+          //                             basicDataItemType:
+          //                                 BasicDataItemType.string,
+          //                           ),
+          //                           "value 2": DataItemType(
+          //                               basicDataItemType:
+          //                                   BasicDataItemType.array,
+          //                               arrayAuxiliaryTypeData:
+          //                                   ArrayAuxiliaryTypeData(
+          //                                       itemType: DataItemType(
+          //                                           basicDataItemType:
+          //                                               BasicDataItemType
+          //                                                   .string)))
+          //                         })))),
+          //         "value 2": DataItemType(
+          //           basicDataItemType: BasicDataItemType.string,
+          //         )
+          //       }, elements: {
+          //         "value 1": DataItem(
+          //             dataItemType: DataItemType(
+          //                 basicDataItemType: BasicDataItemType.array,
+          //                 arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+          //                     itemType: DataItemType(
+          //                         basicDataItemType:
+          //                             BasicDataItemType.namedTuple,
+          //                         namedTupleAuxiliaryTypeData:
+          //                             NamedTupleAuxiliaryTypeData(
+          //                                 elementTypeConfig: {
+          //                               "value 1": DataItemType(
+          //                                 basicDataItemType:
+          //                                     BasicDataItemType.string,
+          //                               ),
+          //                               "value 2": DataItemType(
+          //                                   basicDataItemType:
+          //                                       BasicDataItemType.array,
+          //                                   arrayAuxiliaryTypeData:
+          //                                       ArrayAuxiliaryTypeData(
+          //                                           itemType: DataItemType(
+          //                                               basicDataItemType:
+          //                                                   BasicDataItemType
+          //                                                       .string)))
+          //                             })))),
+          //             arrayData: ArrayData(
+          //                 list: [],
+          //                 itemType: DataItemType(
+          //                     basicDataItemType:
+          //                     BasicDataItemType.namedTuple,
+          //                     namedTupleAuxiliaryTypeData:
+          //                     NamedTupleAuxiliaryTypeData(
+          //                         elementTypeConfig: {
+          //                           "value 1": DataItemType(
+          //                             basicDataItemType:
+          //                             BasicDataItemType.string,
+          //                           ),
+          //                           "value 2": DataItemType(
+          //                               basicDataItemType:
+          //                               BasicDataItemType.array,
+          //                               arrayAuxiliaryTypeData:
+          //                               ArrayAuxiliaryTypeData(
+          //                                   itemType: DataItemType(
+          //                                       basicDataItemType:
+          //                                       BasicDataItemType
+          //                                           .string)))
+          //                         }))
+          //             )),
+          //         "value 2": DataItem(
+          //             dataItemType: DataItemType(
+          //                 basicDataItemType: BasicDataItemType.string),
+          //             stringData: StringData(data: "world"))
+          //       })),
+          // ),
         ),
       ),
     );
