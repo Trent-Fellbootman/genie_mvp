@@ -4,22 +4,22 @@ import 'data_item.dart';
 
 /// An array of data items with the same type.
 class ArrayData extends ChangeNotifier {
-  ArrayData({List<DataItem>? list, required this.itemType}) : _list = list ?? <DataItem>[];
-  final List<DataItem> _list;
+  ArrayData({List<DataItem>? list, required this.itemType}) : _array = list ?? <DataItem>[];
+  final List<DataItem> _array;
   final DataItemType itemType;
 
   DataItem? getValue(int index) {
-    if (index < 0 || index >= _list.length) {
+    if (index < 0 || index >= _array.length) {
       return null;
     }
-    return _list[index];
+    return _array[index];
   }
 
   DataItem? remove(int index) {
-    if (index < 0 || index >= _list.length) {
+    if (index < 0 || index >= _array.length) {
       return null;
     }
-    DataItem item = _list.removeAt(index);
+    DataItem item = _array.removeAt(index);
     notifyListeners();
     return item;
   }
@@ -29,18 +29,18 @@ class ArrayData extends ChangeNotifier {
       throw Exception("Attempting to insert an item of type ${item.dataItemType} into an array of type $itemType");
     }
 
-    if (index < 0 || index > _list.length) {
+    if (index < 0 || index > _array.length) {
       return;
     }
 
-    _list.insert(index, item);
+    _array.insert(index, item);
     notifyListeners();
   }
 
-  int get length => _list.length;
+  int get length => _array.length;
 
   @override
-  String toString() => _list.toString();
+  String toString() => _array.toString();
 }
 
 class ArrayAuxiliaryTypeData {

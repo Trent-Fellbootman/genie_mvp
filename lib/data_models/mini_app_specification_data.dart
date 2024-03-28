@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import 'data_items/data_item.dart';
-import 'primitives/integer_data.dart';
-import 'primitives/string_data.dart';
+import 'mini_app_data_items/data_item.dart';
+import 'data_types/integer_data.dart';
+import 'data_types/string_data.dart';
 
 class MiniAppInputOutputSpecification extends ChangeNotifier {
   MiniAppInputOutputSpecification({

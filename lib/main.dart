@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:genie_mvp/data_models/data_items/named_tuple.dart';
-import 'package:genie_mvp/data_models/data_items/string_data.dart';
-import 'package:genie_mvp/data_models/data_items/array_data.dart';
-import 'package:genie_mvp/data_models/data_items/data_item.dart';
+import 'package:genie_mvp/data_models/mini_app_data_items/named_tuple.dart';
+import 'package:genie_mvp/data_models/mini_app_data_items/string_data.dart';
+import 'package:genie_mvp/data_models/mini_app_data_items/array_data.dart';
+import 'package:genie_mvp/data_models/mini_app_data_items/data_item.dart';
 import 'package:genie_mvp/data_models/mini_app_specification_data.dart';
-import 'package:genie_mvp/data_models/primitives/integer_data.dart';
+import 'package:genie_mvp/data_models/data_types/integer_data.dart';
 import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/data_input_widgets/array_input_widget.dart';
 import 'package:genie_mvp/ui/data_input_widgets/named_tuple_input_widget.dart';
+import 'package:genie_mvp/ui/mini_app_search_view.dart';
 import 'package:genie_mvp/ui/mini_app_view.dart';
 
 void main() {
@@ -48,31 +49,32 @@ class MyApp extends StatelessWidget {
         ),
         body: Container(
           padding: const EdgeInsets.all(16.0),
-          child: MiniAppView(appSpecification: MiniAppSpecification(
-            inputOutputSpecification: MiniAppInputOutputSpecification(
-              inputTypeDeclaration: DataItemType(
-                basicDataItemType: BasicDataItemType.array,
-                arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
-                  itemType: DataItemType(
-                    basicDataItemType: BasicDataItemType.string,
-                  )
-                )
-              ),
-              outputTypeDeclaration: DataItemType(
-                basicDataItemType: BasicDataItemType.string
-              ),
-            ),
-            metadata: MiniAppSpecificationMetadata(
-              name: "随机选择器",
-              description:
-"""随机选择器，选择困难症的福音！
-
-从输入的多个句子中随机选一个输出。
-""",
-              likes: IntegerData(value: 1),
-              dislikes: IntegerData(value: 0),
-            )
-          ),),
+          child: const MiniAppSearchResultDisplayView(searchSessionToken: "",),
+//           child: MiniAppView(appSpecification: MiniAppSpecification(
+//             inputOutputSpecification: MiniAppInputOutputSpecification(
+//               inputTypeDeclaration: DataItemType(
+//                 basicDataItemType: BasicDataItemType.array,
+//                 arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+//                   itemType: DataItemType(
+//                     basicDataItemType: BasicDataItemType.string,
+//                   )
+//                 )
+//               ),
+//               outputTypeDeclaration: DataItemType(
+//                 basicDataItemType: BasicDataItemType.string
+//               ),
+//             ),
+//             metadata: MiniAppSpecificationMetadata(
+//               name: "随机选择器",
+//               description:
+// """随机选择器，选择困难症的福音！
+//
+// 从输入的多个句子中随机选一个输出。
+// """,
+//               likes: IntegerData(value: 1),
+//               dislikes: IntegerData(value: 0),
+//             )
+//           ),),
 //           child: const Markdown(
 //               data:
 // """# Koalas are so cute!

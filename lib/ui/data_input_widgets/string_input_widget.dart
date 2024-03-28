@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:genie_mvp/data_models/data_items/string_data.dart';
+import 'package:genie_mvp/data_models/mini_app_data_items/string_data.dart';
 
 class StringInputWidget extends StatelessWidget {
   const StringInputWidget({super.key, required this.stringDataInstance});
