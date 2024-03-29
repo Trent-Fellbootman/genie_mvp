@@ -18,7 +18,7 @@ class ArrayInputWidget extends StatelessWidget {
         builder: (context, listData, child) {
           return Card(
             elevation: 4,
-            child: ExpansionTile(title: const Text("List"), children: [
+            child: ExpansionTile(title: const Text("点击展开/收回列表"), children: [
               ReorderableListView.builder(
                 shrinkWrap: true,
                 itemCount: listData.length, // Number of items in the list

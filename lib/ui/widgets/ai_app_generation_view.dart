@@ -25,7 +25,7 @@ class _AIMiniAppGenerationViewState extends State<AIMiniAppGenerationView> {
         Align(
           alignment: Alignment.center,
           child: Text(
-            "AI Mini App Generation",
+            "AI小程序生成",
             style: Theme.of(context).textTheme.displaySmall,
           ),
         ),
@@ -38,13 +38,14 @@ class _AIMiniAppGenerationViewState extends State<AIMiniAppGenerationView> {
             },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              hintText: "Describe the app you want to generate...",
+              hintText: "请描述你想要的功能，比如“我有选择困难症，帮我随机选食堂”",
+              hintMaxLines: 2,
             ),
             maxLines: null,
           ),
         ),
         // generate button
-        FilledButton.tonal(
+        FilledButton(
           onPressed: () {
             setState(() {
               if (prompt != null) {
@@ -54,8 +55,11 @@ class _AIMiniAppGenerationViewState extends State<AIMiniAppGenerationView> {
             });
           },
           child: Text(
-            "Generate",
-            style: Theme.of(context).textTheme.titleLarge,
+            "使用AI生成小程序",
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
           ),
         ),
         // generated mini app view

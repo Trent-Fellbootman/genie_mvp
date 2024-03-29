@@ -28,7 +28,7 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
           padding: const EdgeInsets.all(8.0),
           child: SearchBar(
             leading: const Icon(Icons.search),
-            hintText: "What do you want to do?",
+            hintText: "试试搜索你需要的功能，比如“随机选食堂”",
             onSubmitted: (value) {
               setState(() {
                 searchSessionInitiateResponseFuture =

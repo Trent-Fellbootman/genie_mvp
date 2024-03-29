@@ -19,7 +19,7 @@ class MiniAppSearchPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Didn't find the app you want? Try",
+                  "没有找到想要的APP？试试",
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 FilledButton(
@@ -27,7 +27,7 @@ class MiniAppSearchPage extends StatelessWidget {
                     Navigator.of(context).pushNamed('/ai_app_generation_page');
                   },
                   child: Text(
-                    "AI App Generation",
+                    "用AI生成小程序",
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary),
                   ),

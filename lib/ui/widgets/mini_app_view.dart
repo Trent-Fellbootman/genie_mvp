@@ -40,17 +40,17 @@ class _MiniAppViewState extends State<MiniAppView> {
       children: [
         // title
         Text(widget.miniAppSpecification.metadata.name,
-            style: Theme.of(context).textTheme.displayLarge),
+            style: Theme.of(context).textTheme.displaySmall),
         // description
         Markdown(
             shrinkWrap: true,
             data: widget.miniAppSpecification.metadata.description),
         // input title
-        Text("Input", style: Theme.of(context).textTheme.headlineLarge),
+        Text("输入", style: Theme.of(context).textTheme.headlineMedium),
         // input data widget
         DataItemInputWidget(dataItem: inputDataItem),
         // Run button
-        FilledButton.tonal(
+        FilledButton(
             onPressed: () {
               runResultFutureNotifier.value = BackendClient.runMiniApp(
                 MiniAppRunRequest(
@@ -58,9 +58,13 @@ class _MiniAppViewState extends State<MiniAppView> {
                     inputData: inputDataItem),
               );
             },
-            child: Text("Run", style: Theme.of(context).textTheme.titleLarge)),
+            child: Text("运行！",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary))),
         // output title
-        Text("Output", style: Theme.of(context).textTheme.headlineLarge),
+        Text("输出", style: Theme.of(context).textTheme.headlineMedium),
         // output data widget
         ChangeNotifierProvider.value(
           value: runResultFutureNotifier,

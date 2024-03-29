@@ -16,7 +16,7 @@ class NamedTupleInputWidget extends StatelessWidget {
       value: namedTupleDataInstance,
       child: Card(
         elevation: 4,
-        child: ExpansionTile(title: const Text("Named Tuple"), children: [
+        child: ExpansionTile(title: const Text("点击展开/收回表格"), children: [
           Consumer<NamedTupleData>(
             builder: (context, namedTupleData, child) {
               List<Widget> children = [];
