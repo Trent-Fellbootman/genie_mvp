@@ -26,8 +26,13 @@ class StringData extends ChangeNotifier implements DataTreeDeserializable, DataT
   }
 
   @override
-  String toDataTree() {
-    return _data;
+  Map<String, dynamic> toDataTree() {
+    return {
+      'type': {
+        'basic-type': 'string',
+      },
+      'data': _data
+    };
   }
 
   @override

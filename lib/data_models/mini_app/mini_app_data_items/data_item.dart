@@ -60,7 +60,9 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
   // TODO: keep an eye on this
   @override
   int get hashCode =>
-      basicDataItemType.hashCode ^ arrayAuxiliaryTypeData.hashCode ^ namedTupleAuxiliaryTypeData.hashCode;
+      basicDataItemType.hashCode ^
+      arrayAuxiliaryTypeData.hashCode ^
+      namedTupleAuxiliaryTypeData.hashCode;
 
   @override
   String toString() {
@@ -76,9 +78,7 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
 
   // static method override
   static DataItemType fromDataTree(dataTree) {
-    if (!dataTree is Map<String, dynamic>) {
-      throw Exception("Invalid data tree: $dataTree");
-    }
+    assert(dataTree is Map<String, dynamic>);
 
     switch (dataTree["basic-type"]) {
       case "string":
@@ -235,9 +235,7 @@ class DataItem extends ChangeNotifier
 
   // static method override
   static DataItem fromDataTree(dataTree) {
-    if (!dataTree is Map<String, dynamic>) {
-      throw Exception("Invalid data tree passed to `fromDataTree`: $dataTree");
-    }
+    assert(dataTree is Map<String, dynamic>);
 
     switch (dataTree['type']['basic-type']) {
       case 'string':
@@ -266,7 +264,8 @@ class DataItem extends ChangeNotifier
           namedTupleData: namedTupleData,
         );
       default:
-        throw Exception("Invalid data tree passed to `fromDataTree`: $dataTree");
+        throw Exception(
+            "Invalid data tree passed to `fromDataTree`: $dataTree");
     }
   }
 
@@ -294,5 +293,9 @@ class DataItem extends ChangeNotifier
   }
 
   @override
-  int get hashCode => dataItemType.hashCode ^ stringData.hashCode ^ arrayData.hashCode ^ namedTupleData.hashCode;
+  int get hashCode =>
+      dataItemType.hashCode ^
+      stringData.hashCode ^
+      arrayData.hashCode ^
+      namedTupleData.hashCode;
 }

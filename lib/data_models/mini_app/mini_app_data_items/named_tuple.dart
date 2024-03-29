@@ -50,17 +50,28 @@ class NamedTupleData extends ChangeNotifier
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is NamedTupleData && other.elementTypeConfig == elementTypeConfig && other.elements == elements;
+    return other is NamedTupleData &&
+        mapEquals(other.elementTypeConfig, elementTypeConfig) &&
+        mapEquals(other.elements, elements);
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode => elementTypeConfig.hashCode ^ elements.hashCode;
-
 }
 
 class NamedTupleAuxiliaryTypeData {
   NamedTupleAuxiliaryTypeData({required this.elementTypeConfig});
 
   final Map<String, DataItemType> elementTypeConfig;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is NamedTupleAuxiliaryTypeData &&
+        mapEquals(other.elementTypeConfig, elementTypeConfig);
+  }
+
+  @override
+  int get hashCode => elementTypeConfig.hashCode;
 }

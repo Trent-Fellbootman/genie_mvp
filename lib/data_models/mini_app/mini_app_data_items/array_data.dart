@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'data_item.dart';
 import '../../data_tree_convertible.dart';
@@ -62,7 +64,10 @@ class ArrayData extends ChangeNotifier
   @override
   Map<String, dynamic> toDataTree() {
     return {
-      'type': itemType.toDataTree(),
+      'type': {
+        'basic-type': 'array',
+        'auxiliary-data': itemType.toDataTree()
+      },
       'data': _array.map((e) => e.toDataTree()).toList()
     };
   }
@@ -71,7 +76,7 @@ class ArrayData extends ChangeNotifier
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ArrayData && other.itemType == itemType && other._array == _array;
+    return other is ArrayData && other.itemType == itemType && listEquals(other._array, _array);
   }
 
   @override
@@ -82,4 +87,16 @@ class ArrayAuxiliaryTypeData {
   ArrayAuxiliaryTypeData({required this.itemType});
 
   final DataItemType itemType;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ArrayAuxiliaryTypeData && other.itemType == itemType;
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => itemType.hashCode;
+
 }
