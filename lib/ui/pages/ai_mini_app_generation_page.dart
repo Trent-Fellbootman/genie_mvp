@@ -6,9 +6,25 @@ class AIMiniAppGenerationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
-        child: AIMiniAppGenerationView(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // back bar
+            Container(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            // AI app generation view
+            const Expanded(child: AIMiniAppGenerationView()),
+          ],
+        ),
       ),
     );
   }
