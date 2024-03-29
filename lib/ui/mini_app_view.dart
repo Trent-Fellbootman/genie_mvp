@@ -23,8 +23,8 @@ class MiniAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         // title
         Text(miniAppSpecification.metadata.name,
@@ -39,7 +39,6 @@ class MiniAppView extends StatelessWidget {
         // Run button
         FilledButton.tonal(
             onPressed: () {
-              print("pressed");
               runResultFutureNotifier.value = BackendClient.runMiniApp(
                 MiniAppRunRequest(
                     appID: miniAppSpecification.metadata.miniAppID,

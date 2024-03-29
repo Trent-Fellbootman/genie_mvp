@@ -14,24 +14,24 @@ class NamedTupleInputWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<NamedTupleData>.value(
       value: namedTupleDataInstance,
-      child: ExpansionTile(title: const Text("Named Tuple"), children: [
-        Consumer<NamedTupleData>(
-          builder: (context, namedTupleData, child) {
-            List<Widget> children = [];
-            for (var element in namedTupleData.elements.entries) {
-              DataItem dataItem = element.value;
-              children.add(Card(
-                elevation: 4,
-                child: DataItemInputWidget(dataItem: dataItem),
-              ));
-            }
-            return ListView(
-              shrinkWrap: true,
-              children: children,
-            );
-          },
-        )
-      ]),
+      child: Card(
+        elevation: 4,
+        child: ExpansionTile(title: const Text("Named Tuple"), children: [
+          Consumer<NamedTupleData>(
+            builder: (context, namedTupleData, child) {
+              List<Widget> children = [];
+              for (var element in namedTupleData.elements.entries) {
+                DataItem dataItem = element.value;
+                children.add(DataItemInputWidget(dataItem: dataItem));
+              }
+              return ListView(
+                shrinkWrap: true,
+                children: children,
+              );
+            },
+          )
+        ]),
+      ),
     );
   }
 }

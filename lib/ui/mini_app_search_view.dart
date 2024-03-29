@@ -5,6 +5,65 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
 import 'package:genie_mvp/backend/backend_client.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+class MiniAppSearchView extends StatefulWidget {
+  const MiniAppSearchView({super.key});
+
+  @override
+  State createState() => _MiniAppSearchViewState();
+}
+
+class _MiniAppSearchViewState extends State<MiniAppSearchView> {
+  Future<MiniAppSearchSessionInitiateResponse>?
+      searchSessionInitiateResponseFuture;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // search bar
+        SearchBar(
+          leading: const Icon(Icons.search),
+          onSubmitted: (value) {
+            setState(() {
+              searchSessionInitiateResponseFuture =
+                  BackendClient.initiateSearchSession(
+                      MiniAppSearchSessionInitiateRequest(searchString: value));
+            });
+          },
+        ),
+        Expanded(
+            child: searchSessionInitiateResponseFuture == null
+                ? Container()
+                : FutureBuilder(
+                    future: searchSessionInitiateResponseFuture!,
+                    builder: (context, snapshot) {
+                      Widget loadingAnimationWidget = Container(
+                        alignment: Alignment.topCenter,
+                        child: LoadingAnimationWidget.threeRotatingDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 32),
+                      );
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return loadingAnimationWidget;
+                      }
+
+                      if (snapshot.hasData) {
+                        return MiniAppSearchResultDisplayView(
+                            searchSessionToken:
+                                snapshot.data!.searchSessionToken);
+                      } else if (snapshot.hasError) {
+                        return Text("An error occurred: ${snapshot.error}");
+                      } else {
+                        return loadingAnimationWidget;
+                      }
+                    })),
+      ],
+    );
+  }
+}
 
 class MiniAppSearchResultDisplayView extends StatefulWidget {
   const MiniAppSearchResultDisplayView({

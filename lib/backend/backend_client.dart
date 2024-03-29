@@ -13,7 +13,16 @@ class BackendClient {
   /// Initiates a search session.
   static Future<MiniAppSearchSessionInitiateResponse> initiateSearchSession(
       MiniAppSearchSessionInitiateRequest request) async {
-    throw UnimplementedError();
+    // TODO: remove mock implementation
+    Random rng = Random();
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (rng.nextBool()) {
+      return const MiniAppSearchSessionInitiateResponse(
+          searchSessionToken: "test-token");
+    } else {
+      throw Exception("An error occurred.");
+    }
   }
 
   /// Retrieves a page of items for a search session.

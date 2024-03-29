@@ -16,47 +16,47 @@ class ArrayInputWidget extends StatelessWidget {
       value: arrayDataInstance,
       child: Consumer<ArrayData>(
         builder: (context, listData, child) {
-          return ExpansionTile(title: const Text("List"), children: [
-            ReorderableListView.builder(
-              shrinkWrap: true,
-              itemCount: listData.length, // Number of items in the list
-              itemBuilder: (context, index) {
-                // Builds each item
-                DataItem dataItem = listData.getValue(index)!;
-                return Row(key: ValueKey(dataItem), children: [
-                  const Icon(Icons.drag_handle),
-                  Expanded(
-                    child: Card(
-                      elevation: 4,
-                      child: DataItemInputWidget(dataItem: dataItem),
+          return Card(
+            elevation: 4,
+            child: ExpansionTile(title: const Text("List"), children: [
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                itemCount: listData.length, // Number of items in the list
+                itemBuilder: (context, index) {
+                  // Builds each item
+                  DataItem dataItem = listData.getValue(index)!;
+                  return Row(key: ValueKey(dataItem), children: [
+                    const Icon(Icons.drag_handle),
+                    Expanded(
+                        child: DataItemInputWidget(dataItem: dataItem),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      listData.remove(index);
-                    },
-                    icon: const Icon(Icons.delete),
-                  )
-                ]);
-              },
-              onReorder: (int oldIndex, int newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1; // Adjust for removing the item
-                }
+                    IconButton(
+                      onPressed: () {
+                        listData.remove(index);
+                      },
+                      icon: const Icon(Icons.delete),
+                    )
+                  ]);
+                },
+                onReorder: (int oldIndex, int newIndex) {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1; // Adjust for removing the item
+                  }
 
-                // Perform the reorder operation
-                var item = listData.remove(oldIndex)!;
-                listData.insert(newIndex, item);
-              },
-            ),
-            FilledButton(
-              onPressed: () {
-                arrayDataInstance.insert(arrayDataInstance.length,
-                    DataItem.createDefaultDataItem(arrayDataInstance.itemType));
-              },
-              child: const Icon(Icons.add),
-            )
-          ]);
+                  // Perform the reorder operation
+                  var item = listData.remove(oldIndex)!;
+                  listData.insert(newIndex, item);
+                },
+              ),
+              FilledButton(
+                onPressed: () {
+                  arrayDataInstance.insert(arrayDataInstance.length,
+                      DataItem.createDefaultDataItem(arrayDataInstance.itemType));
+                },
+                child: const Icon(Icons.add),
+              )
+            ]),
+          );
         },
       ),
     );
