@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/mini_app_search_view.dart';
 
-import 'data_models/mini_app_data_items/array_data.dart';
-import 'data_models/mini_app_data_items/data_item.dart';
-import 'data_models/mini_app_data_items/named_tuple.dart';
-import 'data_models/mini_app_data_items/string_data.dart';
+import 'data_models/mini_app/mini_app_data_items/array_data.dart';
+import 'data_models/mini_app/mini_app_data_items/data_item.dart';
+import 'data_models/mini_app/mini_app_data_items/named_tuple.dart';
+import 'data_models/mini_app/mini_app_data_items/string_data.dart';
 
 void main() {
   runApp(const MyApp());

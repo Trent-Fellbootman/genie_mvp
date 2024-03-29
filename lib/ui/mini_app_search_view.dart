@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:genie_mvp/data_models/mini_app_specification_data.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
 import 'package:genie_mvp/ui/mini_app_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 

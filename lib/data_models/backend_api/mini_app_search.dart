@@ -1,4 +1,4 @@
-import '../mini_app_specification_data.dart';
+import '../mini_app/mini_app_specification_data.dart';
 
 /// Initial query used to send search parameter to the server;
 /// Page requests can be processed only after this query is sent.

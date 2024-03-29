@@ -3,20 +3,32 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:genie_mvp/backend/backend_client.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/data_types/atomic_notifier.dart';
-import 'package:genie_mvp/data_models/mini_app_data_items/data_item.dart';
-import 'package:genie_mvp/data_models/mini_app_specification_data.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'data_input_widgets/data_item_input_widget.dart';
 import 'data_display_widgets/data_item_display_widget.dart';
 
-class MiniAppView extends StatelessWidget {
-  MiniAppView({super.key, required this.miniAppSpecification}) {
-    inputDataItem = DataItem.createDefaultDataItem(
-        miniAppSpecification.inputOutputSpecification.inputTypeDeclaration);
-  }
+class MiniAppView extends StatefulWidget {
+  const MiniAppView({super.key, required this.miniAppSpecification});
 
   final MiniAppSpecification miniAppSpecification;
+
+  @override
+  State createState() => _MiniAppViewState();
+}
+
+class _MiniAppViewState extends State<MiniAppView> {
+  _MiniAppViewState();
+
+  @override
+  void initState() {
+    super.initState();
+    inputDataItem = DataItem.createDefaultDataItem(widget
+        .miniAppSpecification.inputOutputSpecification.inputTypeDeclaration);
+  }
+
   late final DataItem inputDataItem;
   final AtomicNotifier<Future<MiniAppRunResponse>?> runResultFutureNotifier =
       AtomicNotifier(value: null);
@@ -27,11 +39,12 @@ class MiniAppView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // title
-        Text(miniAppSpecification.metadata.name,
+        Text(widget.miniAppSpecification.metadata.name,
             style: Theme.of(context).textTheme.displayLarge),
         // description
         Markdown(
-            shrinkWrap: true, data: miniAppSpecification.metadata.description),
+            shrinkWrap: true,
+            data: widget.miniAppSpecification.metadata.description),
         // input title
         Text("Input", style: Theme.of(context).textTheme.headlineLarge),
         // input data widget
@@ -41,7 +54,7 @@ class MiniAppView extends StatelessWidget {
             onPressed: () {
               runResultFutureNotifier.value = BackendClient.runMiniApp(
                 MiniAppRunRequest(
-                    appID: miniAppSpecification.metadata.miniAppID,
+                    appID: widget.miniAppSpecification.metadata.miniAppID,
                     inputData: inputDataItem),
               );
             },
