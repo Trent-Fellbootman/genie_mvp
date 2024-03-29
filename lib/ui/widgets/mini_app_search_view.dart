@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
-import 'package:genie_mvp/ui/mini_app_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import 'mini_app_view.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
 import 'package:genie_mvp/backend/backend_client.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MiniAppSearchView extends StatefulWidget {
   const MiniAppSearchView({super.key});
@@ -28,6 +28,7 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
           padding: const EdgeInsets.all(8.0),
           child: SearchBar(
             leading: const Icon(Icons.search),
+            hintText: "What do you want to do?",
             onSubmitted: (value) {
               setState(() {
                 searchSessionInitiateResponseFuture =

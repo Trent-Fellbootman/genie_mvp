@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:genie_mvp/ui/ai_app_generation_view.dart';
-import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
-import 'package:genie_mvp/ui/mini_app_search_view.dart';
+import 'package:genie_mvp/ui/pages/ai_mini_app_generation_page.dart';
+import 'package:genie_mvp/ui/pages/mini_app_search_page.dart';
+import 'package:genie_mvp/ui/widgets/ai_app_generation_view.dart';
+import 'package:genie_mvp/ui/widgets/data_input_widgets/data_item_input_widget.dart';
+import 'package:genie_mvp/ui/widgets/mini_app_search_view.dart';
 
 import 'data_models/mini_app/mini_app_data_items/array_data.dart';
 import 'data_models/mini_app/mini_app_data_items/data_item.dart';
@@ -39,12 +41,16 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Scaffold(
+      routes: {
+        '/': (context) => const MiniAppSearchPage(),
+        '/ai_app_generation_page': (context) => const AIMiniAppGenerationPage(),
+      },
+      // home: const Scaffold(
         // appBar: AppBar(
         //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),
         // ),
-        body: SafeArea(
-          child: AIMiniAppGenerationView(),
+        // body: SafeArea(
+          // child: AIMiniAppGenerationView(),
           // child: MiniAppSearchView(),
 //           child: MiniAppView(appSpecification: MiniAppSpecification(
 //             inputOutputSpecification: MiniAppInputOutputSpecification(
@@ -199,8 +205,8 @@ class MyApp extends StatelessWidget {
 //                       stringData: StringData(data: "world"))
 //                 })),
 //           ),
-        ),
-      ),
+//         ),
+//       ),
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:genie_mvp/backend/backend_client.dart';
 import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
-import 'package:genie_mvp/ui/mini_app_view.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import 'mini_app_view.dart';
 
 class AIMiniAppGenerationView extends StatefulWidget {
   const AIMiniAppGenerationView({super.key});
