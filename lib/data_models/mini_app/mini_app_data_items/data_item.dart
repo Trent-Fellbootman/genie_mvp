@@ -57,9 +57,10 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
         other.namedTupleAuxiliaryTypeData == namedTupleAuxiliaryTypeData;
   }
 
+  // TODO: keep an eye on this
   @override
   int get hashCode =>
-      basicDataItemType.hashCode ^ arrayAuxiliaryTypeData.hashCode;
+      basicDataItemType.hashCode ^ arrayAuxiliaryTypeData.hashCode ^ namedTupleAuxiliaryTypeData.hashCode;
 
   @override
   String toString() {
@@ -271,7 +272,27 @@ class DataItem extends ChangeNotifier
 
   @override
   dynamic toDataTree() {
-    // TODO: implement toDataTree
-    throw UnimplementedError();
+    switch (dataItemType.basicDataItemType) {
+      case BasicDataItemType.string:
+        return stringData!.toDataTree();
+      case BasicDataItemType.array:
+        return arrayData!.toDataTree();
+      case BasicDataItemType.namedTuple:
+        return namedTupleData!.toDataTree();
+    }
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is DataItem &&
+        other.dataItemType == dataItemType &&
+        other.stringData == stringData &&
+        other.arrayData == arrayData &&
+        other.namedTupleData == namedTupleData;
+  }
+
+  @override
+  int get hashCode => dataItemType.hashCode ^ stringData.hashCode ^ arrayData.hashCode ^ namedTupleData.hashCode;
 }

@@ -66,6 +66,16 @@ class ArrayData extends ChangeNotifier
       'data': _array.map((e) => e.toDataTree()).toList()
     };
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ArrayData && other.itemType == itemType && other._array == _array;
+  }
+
+  @override
+  int get hashCode => itemType.hashCode ^ _array.hashCode;
 }
 
 class ArrayAuxiliaryTypeData {

@@ -45,6 +45,18 @@ class NamedTupleData extends ChangeNotifier
       'data': elements.map((key, value) => MapEntry(key, value.toDataTree()))
     };
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is NamedTupleData && other.elementTypeConfig == elementTypeConfig && other.elements == elements;
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => elementTypeConfig.hashCode ^ elements.hashCode;
+
 }
 
 class NamedTupleAuxiliaryTypeData {

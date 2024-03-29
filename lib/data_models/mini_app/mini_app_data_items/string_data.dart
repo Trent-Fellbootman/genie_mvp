@@ -29,4 +29,14 @@ class StringData extends ChangeNotifier implements DataTreeDeserializable, DataT
   String toDataTree() {
     return _data;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StringData && other.data == data;
+  }
+
+  @override
+  int get hashCode => data.hashCode;
 }
