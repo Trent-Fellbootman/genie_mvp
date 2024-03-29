@@ -1,16 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:genie_mvp/data_models/mini_app_data_items/named_tuple.dart';
-import 'package:genie_mvp/data_models/mini_app_data_items/string_data.dart';
-import 'package:genie_mvp/data_models/mini_app_data_items/array_data.dart';
-import 'package:genie_mvp/data_models/mini_app_data_items/data_item.dart';
-import 'package:genie_mvp/data_models/mini_app_specification_data.dart';
-import 'package:genie_mvp/data_models/data_types/integer_data.dart';
-import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
-import 'package:genie_mvp/ui/data_input_widgets/array_input_widget.dart';
-import 'package:genie_mvp/ui/data_input_widgets/named_tuple_input_widget.dart';
 import 'package:genie_mvp/ui/mini_app_search_view.dart';
-import 'package:genie_mvp/ui/mini_app_view.dart';
 
 void main() {
   runApp(const MyApp());

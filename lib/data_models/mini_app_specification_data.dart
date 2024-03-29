@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 
 import 'mini_app_data_items/data_item.dart';
 import 'data_types/integer_data.dart';
-import 'data_types/string_data.dart';
 
 class MiniAppInputOutputSpecification extends ChangeNotifier {
   MiniAppInputOutputSpecification({
@@ -16,16 +15,18 @@ class MiniAppInputOutputSpecification extends ChangeNotifier {
 
 class MiniAppSpecificationMetadata {
   MiniAppSpecificationMetadata({
+    required this.miniAppID,
+    required this.description,
     required this.name,
     required this.likes,
     required this.dislikes,
-    required this.description,
   });
 
+  final String miniAppID;
   final String name;
+  final String description;
   final IntegerData likes;
   final IntegerData dislikes;
-  final String description;
 }
 
 class MiniAppSpecification {
