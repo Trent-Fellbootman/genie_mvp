@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 import 'data_item.dart';
+import '../../data_tree_convertible.dart';
 
 /// An array of data items with the same type.
-class ArrayData extends ChangeNotifier {
-  ArrayData({List<DataItem>? list, required this.itemType}) : _array = list ?? <DataItem>[];
+class ArrayData extends ChangeNotifier
+    implements DataTreeSerializable, DataTreeDeserializable {
+  ArrayData({List<DataItem>? data, required this.itemType})
+      : _array = data ?? <DataItem>[];
   final List<DataItem> _array;
   final DataItemType itemType;
 
@@ -26,7 +29,8 @@ class ArrayData extends ChangeNotifier {
 
   void insert(int index, DataItem item) {
     if (item.dataItemType != itemType) {
-      throw Exception("Attempting to insert an item of type ${item.dataItemType} into an array of type $itemType");
+      throw Exception(
+          "Attempting to insert an item of type ${item.dataItemType} into an array of type $itemType");
     }
 
     if (index < 0 || index > _array.length) {
@@ -41,6 +45,27 @@ class ArrayData extends ChangeNotifier {
 
   @override
   String toString() => _array.toString();
+
+  // static method override
+  static ArrayData fromDataTree(dataTree) {
+    assert(dataTree is Map<String, dynamic>);
+    assert(dataTree['type']['basic-type'] == 'array');
+    assert(dataTree['data'] is List);
+
+    DataItemType itemType = DataItemType.fromDataTree(dataTree['type']['auxiliary-data']);
+    return ArrayData(
+      data: (dataTree['data'] as List).map((e) => DataItem.fromDataTree(e)).toList(),
+      itemType: itemType
+    );
+  }
+
+  @override
+  Map<String, dynamic> toDataTree() {
+    return {
+      'type': itemType.toDataTree(),
+      'data': _array.map((e) => e.toDataTree()).toList()
+    };
+  }
 }
 
 class ArrayAuxiliaryTypeData {

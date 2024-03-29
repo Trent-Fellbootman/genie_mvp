@@ -1,13 +1,42 @@
 import 'package:flutter/foundation.dart';
-import 'named_tuple.dart';
 
+import 'named_tuple.dart';
 import 'string_data.dart';
 import 'array_data.dart';
+
+import '../../data_tree_convertible.dart';
 
 enum BasicDataItemType { string, array, namedTuple }
 
 // TODO: unit tests
-class DataItemType {
+/// ## Serialization Scheme Examples
+///
+/// ### String
+///
+/// {
+///   "basic-type": "string"
+/// }
+///
+/// ### Array
+///
+/// {
+///   "basic-type": "array",
+///   "auxiliary-data": {
+///     "basic-type": string
+///   }
+/// }
+///
+/// ### Named Tuple
+///
+/// {
+///   "basic-type": "named-tuple",
+///   "auxiliary-data": {
+///     "value 1": {
+///       "basic-type": string
+///     }
+///   }
+/// }
+class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
   DataItemType(
       {required this.basicDataItemType,
       this.arrayAuxiliaryTypeData,
@@ -43,9 +72,117 @@ class DataItemType {
         return 'DataItemType::namedTuple<${namedTupleAuxiliaryTypeData!.elementTypeConfig}>';
     }
   }
+
+  // static method override
+  static DataItemType fromDataTree(dataTree) {
+    if (!dataTree is Map<String, dynamic>) {
+      throw Exception("Invalid data tree: $dataTree");
+    }
+
+    switch (dataTree["basic-type"]) {
+      case "string":
+        return DataItemType(basicDataItemType: BasicDataItemType.string);
+      case "array":
+        return DataItemType(
+          basicDataItemType: BasicDataItemType.array,
+          arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
+            itemType: fromDataTree(dataTree["auxiliary-data"]),
+          ),
+        );
+      case "named-tuple":
+        Map<String, dynamic> auxiliaryDataTree = dataTree["auxiliary-data"];
+        return DataItemType(
+          basicDataItemType: BasicDataItemType.namedTuple,
+          namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
+            elementTypeConfig: auxiliaryDataTree
+                .map((key, value) => MapEntry(key, fromDataTree(value))),
+          ),
+        );
+      default:
+        throw Exception("Invalid data tree: $dataTree");
+    }
+  }
+
+  @override
+  toDataTree() {
+    switch (basicDataItemType) {
+      case BasicDataItemType.string:
+        return {
+          "basic-type": "string",
+        };
+      case BasicDataItemType.array:
+        return {
+          "basic-type": "array",
+          "auxiliary-data": arrayAuxiliaryTypeData!.itemType.toDataTree(),
+        };
+      case BasicDataItemType.namedTuple:
+        return {
+          "basic-type": "named-tuple",
+          "auxiliary-data": namedTupleAuxiliaryTypeData!.elementTypeConfig
+              .map((key, value) => MapEntry(key, value.toDataTree())),
+        };
+    }
+  }
 }
 
-class DataItem extends ChangeNotifier {
+/// ## Serialization Examples
+///
+/// ### String
+///
+/// {
+///   "type": {
+///     "basic-type": "string"
+///   },
+///   "data": "hello world"
+/// }
+///
+/// ### Array
+///
+/// {
+///   "type": {
+///     "basic-type": "array",
+///     "auxiliary-data": {
+///       "basic-type": "string"
+///     }
+///   },
+///   "data": [
+///     {
+///       "type": {
+///         "basic-type": "string"
+///       },
+///       "data": "hello"
+///     },
+///     {
+///       "type": {
+///         "basic-type": "string"
+///       },
+///       "data": "world"
+///     },
+///   ]
+/// }
+///
+/// ### Named Tuple
+///
+/// {
+///   "type": {
+///     "basic-type": "named-tuple",
+///     "auxiliary-data": {
+///       "value 1": {
+///         "basic-type": "string"
+///       }
+///     }
+///   },
+///   "data": {
+///     "value 1": {
+///       "type": {
+///         "basic-type": "string"
+///       },
+///       "data": "hello world"
+///     }
+///   }
+/// }
+class DataItem extends ChangeNotifier
+    implements DataTreeDeserializable, DataTreeSerializable {
   DataItem(
       {required this.dataItemType,
       this.stringData,
@@ -93,5 +230,48 @@ class DataItem extends ChangeNotifier {
       case BasicDataItemType.namedTuple:
         return 'DataItem::NamedTuple<${namedTupleData!.elementTypeConfig}>(${namedTupleData!})';
     }
+  }
+
+  // static method override
+  static DataItem fromDataTree(dataTree) {
+    if (!dataTree is Map<String, dynamic>) {
+      throw Exception("Invalid data tree passed to `fromDataTree`: $dataTree");
+    }
+
+    switch (dataTree['type']['basic-type']) {
+      case 'string':
+        return DataItem(
+            dataItemType:
+                DataItemType(basicDataItemType: BasicDataItemType.string),
+            stringData: StringData.fromDataTree(dataTree));
+      case 'array':
+        ArrayData arrayData = ArrayData.fromDataTree(dataTree);
+        return DataItem(
+          dataItemType: DataItemType(
+            basicDataItemType: BasicDataItemType.array,
+            arrayAuxiliaryTypeData:
+                ArrayAuxiliaryTypeData(itemType: arrayData.itemType),
+          ),
+          arrayData: arrayData,
+        );
+      case 'named-tuple':
+        NamedTupleData namedTupleData = NamedTupleData.fromDataTree(dataTree);
+        return DataItem(
+          dataItemType: DataItemType(
+            basicDataItemType: BasicDataItemType.namedTuple,
+            namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
+                elementTypeConfig: namedTupleData.elementTypeConfig),
+          ),
+          namedTupleData: namedTupleData,
+        );
+      default:
+        throw Exception("Invalid data tree passed to `fromDataTree`: $dataTree");
+    }
+  }
+
+  @override
+  dynamic toDataTree() {
+    // TODO: implement toDataTree
+    throw UnimplementedError();
   }
 }
