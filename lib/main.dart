@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:genie_mvp/ui/ai_app_generation_view.dart';
 import 'package:genie_mvp/ui/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/mini_app_search_view.dart';
 
@@ -43,7 +44,8 @@ class MyApp extends StatelessWidget {
         //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),
         // ),
         body: SafeArea(
-          child: MiniAppSearchView(),
+          child: AIMiniAppGenerationView(),
+          // child: MiniAppSearchView(),
 //           child: MiniAppView(appSpecification: MiniAppSpecification(
 //             inputOutputSpecification: MiniAppInputOutputSpecification(
 //               inputTypeDeclaration: DataItemType(
