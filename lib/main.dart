@@ -38,13 +38,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 255, 0, 255),
-        ),
-        body: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: const MiniAppSearchView(),
+      home: const Scaffold(
+        // appBar: AppBar(
+        //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),
+        // ),
+        body: SafeArea(
+          child: MiniAppSearchView(),
 //           child: MiniAppView(appSpecification: MiniAppSpecification(
 //             inputOutputSpecification: MiniAppInputOutputSpecification(
 //               inputTypeDeclaration: DataItemType(

@@ -24,15 +24,18 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // search bar
-        SearchBar(
-          leading: const Icon(Icons.search),
-          onSubmitted: (value) {
-            setState(() {
-              searchSessionInitiateResponseFuture =
-                  BackendClient.initiateSearchSession(
-                      MiniAppSearchSessionInitiateRequest(searchString: value));
-            });
-          },
+        Container(
+          padding: const EdgeInsets.all(8.0),
+          child: SearchBar(
+            leading: const Icon(Icons.search),
+            onSubmitted: (value) {
+              setState(() {
+                searchSessionInitiateResponseFuture =
+                    BackendClient.initiateSearchSession(
+                        MiniAppSearchSessionInitiateRequest(searchString: value));
+              });
+            },
+          ),
         ),
         Expanded(
             child: searchSessionInitiateResponseFuture == null
@@ -43,8 +46,9 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
                       Widget loadingAnimationWidget = Container(
                         alignment: Alignment.topCenter,
                         child: LoadingAnimationWidget.threeRotatingDots(
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 32),
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 32,
+                        ),
                       );
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return loadingAnimationWidget;
@@ -150,7 +154,13 @@ class MiniAppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: refactor
-    return MiniAppView(miniAppSpecification: miniAppSpecification);
+    // TODO: add appropriate implementation
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      elevation: 4,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+          child: MiniAppView(miniAppSpecification: miniAppSpecification)),
+    );
   }
 }
