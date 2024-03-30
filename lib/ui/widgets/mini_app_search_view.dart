@@ -15,8 +15,7 @@ class MiniAppSearchView extends StatefulWidget {
 }
 
 class _MiniAppSearchViewState extends State<MiniAppSearchView> {
-  Future<MiniAppSearchSessionInitiateResponse>?
-      searchSessionInitiateResponseFuture;
+  MiniAppSearchParameters? searchParameters;
 
   @override
   Widget build(BuildContext context) {
@@ -31,40 +30,17 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
             hintText: "试试搜索你需要的功能，比如“随机选食堂”",
             onSubmitted: (value) {
               setState(() {
-                searchSessionInitiateResponseFuture =
-                    BackendClient.initiateSearchSession(
-                        MiniAppSearchSessionInitiateRequest(searchString: value));
+                searchParameters = MiniAppSearchParameters(searchQuery: value);
               });
             },
           ),
         ),
         Expanded(
-            child: searchSessionInitiateResponseFuture == null
-                ? Container()
-                : FutureBuilder(
-                    future: searchSessionInitiateResponseFuture!,
-                    builder: (context, snapshot) {
-                      Widget loadingAnimationWidget = Container(
-                        alignment: Alignment.topCenter,
-                        child: LoadingAnimationWidget.threeRotatingDots(
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 32,
-                        ),
-                      );
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return loadingAnimationWidget;
-                      }
-
-                      if (snapshot.hasData) {
-                        return MiniAppSearchResultDisplayView(
-                            searchSessionToken:
-                                snapshot.data!.searchSessionToken);
-                      } else if (snapshot.hasError) {
-                        return Text("An error occurred: ${snapshot.error}");
-                      } else {
-                        return loadingAnimationWidget;
-                      }
-                    })),
+          child: searchParameters == null
+              ? Container()
+              : MiniAppSearchResultDisplayView(
+                  searchParameters: searchParameters!),
+        ),
       ],
     );
   }
@@ -73,10 +49,10 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
 class MiniAppSearchResultDisplayView extends StatefulWidget {
   const MiniAppSearchResultDisplayView({
     super.key,
-    required this.searchSessionToken,
+    required this.searchParameters,
   });
 
-  final String searchSessionToken;
+  final MiniAppSearchParameters searchParameters;
 
   @override
   State<MiniAppSearchResultDisplayView> createState() =>
@@ -104,7 +80,7 @@ class _MiniAppSearchResultDisplayViewState
       final MiniAppSearchPageResponse response =
           await BackendClient.pageSearchSession(
         MiniAppSearchPageRequest(
-          searchSessionToken: widget.searchSessionToken,
+          searchParameters: widget.searchParameters,
           pageIndex: pageKey,
           pageSize: _pageSize,
         ),
@@ -160,7 +136,7 @@ class MiniAppCard extends StatelessWidget {
       margin: const EdgeInsets.all(8.0),
       elevation: 4,
       child: Container(
-        padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: MiniAppView(miniAppSpecification: miniAppSpecification)),
     );
   }

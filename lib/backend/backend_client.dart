@@ -8,8 +8,14 @@ import 'package:genie_mvp/data_models/data_types/integer_data.dart';
 
 import 'dart:math';
 
+class Credentials {
+  const Credentials({required this.token});
+
+  final String token;
+}
+
 class BackendClient {
-  static String? token;
+  static Credentials? credentials;
 
   static MiniAppSpecification mockMiniAppSpecification = MiniAppSpecification(
     inputOutputSpecification: MiniAppInputOutputSpecification(
@@ -33,21 +39,6 @@ class BackendClient {
       dislikes: IntegerData(value: 0),
     ),
   );
-
-  /// Initiates a search session.
-  static Future<MiniAppSearchSessionInitiateResponse> initiateSearchSession(
-      MiniAppSearchSessionInitiateRequest request) async {
-    // TODO: remove mock implementation
-    Random rng = Random();
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (rng.nextBool()) {
-      return const MiniAppSearchSessionInitiateResponse(
-          searchSessionToken: "test-token");
-    } else {
-      throw Exception("An error occurred.");
-    }
-  }
 
   /// Retrieves a page of items for a search session.
   static Future<MiniAppSearchPageResponse> pageSearchSession(

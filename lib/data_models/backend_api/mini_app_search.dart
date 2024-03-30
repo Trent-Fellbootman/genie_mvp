@@ -1,25 +1,16 @@
 import '../mini_app/mini_app_specification_data.dart';
 
-/// Initial query used to send search parameter to the server;
-/// Page requests can be processed only after this query is sent.
-class MiniAppSearchSessionInitiateRequest {
-  const MiniAppSearchSessionInitiateRequest({required this.searchString});
+class MiniAppSearchParameters {
+  const MiniAppSearchParameters({required this.searchQuery});
 
-  final String searchString;
-}
-
-/// Response of `MiniAppSearchSessionInitiateRequest`
-class MiniAppSearchSessionInitiateResponse {
-  const MiniAppSearchSessionInitiateResponse({required this.searchSessionToken});
-
-  final String searchSessionToken;
+  final String searchQuery;
 }
 
 /// A request for retrieving a page of search results.
 class MiniAppSearchPageRequest {
-  const MiniAppSearchPageRequest({required this.searchSessionToken, required this.pageIndex, required this.pageSize});
+  const MiniAppSearchPageRequest({required this.searchParameters, required this.pageIndex, required this.pageSize});
 
-  final String searchSessionToken;
+  final MiniAppSearchParameters searchParameters;
   final int pageIndex;
   final int pageSize;
 }

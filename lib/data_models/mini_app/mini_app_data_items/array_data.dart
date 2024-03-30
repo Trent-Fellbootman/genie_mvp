@@ -72,7 +72,6 @@ class ArrayAuxiliaryTypeData {
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode => itemType.hashCode;
 
 }
