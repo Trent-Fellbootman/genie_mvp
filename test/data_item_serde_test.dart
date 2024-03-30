@@ -7,8 +7,10 @@ import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/named_tuple.d
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/string_data.dart';
 
 void main() {
-  test("Sample data item should be serialized to JSON and deserialized back.",
+  group(
+      "Test serialization & deserialization of data item and data item type declaration",
       () {
+    // sample objects
     DataItemType stringType =
         DataItemType(basicDataItemType: BasicDataItemType.string);
     DataItemType stringArrayType = DataItemType(
@@ -63,13 +65,32 @@ void main() {
                 ],
               )),
           "value 2": DataItem(
-              dataItemType:
-                  stringType,
-              stringData: StringData(data: "world"))
+              dataItemType: stringType, stringData: StringData(data: "world"))
         }));
 
-    String json = jsonEncode(sampleDataItem.toDataTree());
-    DataItem deserializedDataItem = DataItem.fromDataTree(jsonDecode(json));
-    expect(sampleDataItem, deserializedDataItem);
+    test(
+        "sample data item type declaration should be serialized to JSON and deserialized back.",
+        () {
+      String json = jsonEncode(topLevelNamedTupleType.toDataTree());
+      DataItemType deserializedDataItemType =
+          DataItemType.fromDataTree(jsonDecode(json));
+      expect(topLevelNamedTupleType, deserializedDataItemType);
+    });
+
+    test(
+        "The data part of the sample data item should be serialized to JSON and deserialized back.",
+        () {
+      String json = jsonEncode(sampleDataItem.serializeDataToDataTree());
+      DataItem deserializedDataItem =
+          topLevelNamedTupleType.deserializeDataItem(jsonDecode(json));
+      expect(sampleDataItem, deserializedDataItem);
+    });
+
+    test("Sample data item should be serialized to JSON and deserialized back.",
+        () {
+      String json = jsonEncode(sampleDataItem.toDataTree());
+      DataItem deserializedDataItem = DataItem.fromDataTree(jsonDecode(json));
+      expect(sampleDataItem, deserializedDataItem);
+    });
   });
 }

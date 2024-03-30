@@ -76,6 +76,33 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
     }
   }
 
+  /// Deserializes a data item from a data tree containing only the data of that item but not its type information.
+  DataItem deserializeDataItem(dynamic dataTree) {
+    switch (basicDataItemType) {
+      case BasicDataItemType.string:
+        return DataItem(
+            dataItemType: this, stringData: StringData(data: dataTree));
+      case BasicDataItemType.array:
+        DataItemType itemType = arrayAuxiliaryTypeData!.itemType;
+        List<DataItem> items = (dataTree as List)
+            .map((e) => itemType.deserializeDataItem(e))
+            .toList();
+        return DataItem(
+            dataItemType: this,
+            arrayData: ArrayData(itemType: itemType, data: items));
+      case BasicDataItemType.namedTuple:
+        Map<String, DataItemType> elementTypeConfig =
+            namedTupleAuxiliaryTypeData!.elementTypeConfig;
+        Map<String, DataItem> elements = (dataTree as Map<String, dynamic>).map(
+            (key, value) => MapEntry(
+                key, elementTypeConfig[key]!.deserializeDataItem(value)));
+        return DataItem(
+            dataItemType: this,
+            namedTupleData: NamedTupleData(
+                elementTypeConfig: elementTypeConfig, elements: elements));
+    }
+  }
+
   // static method override
   static DataItemType fromDataTree(dataTree) {
     assert(dataTree is Map<String, dynamic>);
@@ -126,64 +153,23 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
   }
 }
 
-/// ## Serialization Examples
+/// ## Serialization Examples (no type information)
 ///
 /// ### String
 ///
-/// {
-///   "type": {
-///     "basic-type": "string"
-///   },
-///   "data": "hello world"
-/// }
+/// "data"
 ///
 /// ### Array
 ///
-/// {
-///   "type": {
-///     "basic-type": "array",
-///     "auxiliary-data": {
-///       "basic-type": "string"
-///     }
-///   },
-///   "data": [
-///     {
-///       "type": {
-///         "basic-type": "string"
-///       },
-///       "data": "hello"
-///     },
-///     {
-///       "type": {
-///         "basic-type": "string"
-///       },
-///       "data": "world"
-///     },
-///   ]
-/// }
+/// ["data"]
 ///
 /// ### Named Tuple
 ///
 /// {
-///   "type": {
-///     "basic-type": "named-tuple",
-///     "auxiliary-data": {
-///       "value 1": {
-///         "basic-type": "string"
-///       }
-///     }
-///   },
-///   "data": {
-///     "value 1": {
-///       "type": {
-///         "basic-type": "string"
-///       },
-///       "data": "hello world"
-///     }
-///   }
+///   "test": "data"
 /// }
 class DataItem extends ChangeNotifier
-    implements DataTreeDeserializable, DataTreeSerializable {
+    implements DataTreeSerializable, DataTreeDeserializable {
   DataItem(
       {required this.dataItemType,
       this.stringData,
@@ -233,51 +219,17 @@ class DataItem extends ChangeNotifier
     }
   }
 
-  // static method override
-  static DataItem fromDataTree(dataTree) {
-    assert(dataTree is Map<String, dynamic>);
-
-    switch (dataTree['type']['basic-type']) {
-      case 'string':
-        return DataItem(
-            dataItemType:
-                DataItemType(basicDataItemType: BasicDataItemType.string),
-            stringData: StringData.fromDataTree(dataTree));
-      case 'array':
-        ArrayData arrayData = ArrayData.fromDataTree(dataTree);
-        return DataItem(
-          dataItemType: DataItemType(
-            basicDataItemType: BasicDataItemType.array,
-            arrayAuxiliaryTypeData:
-                ArrayAuxiliaryTypeData(itemType: arrayData.itemType),
-          ),
-          arrayData: arrayData,
-        );
-      case 'named-tuple':
-        NamedTupleData namedTupleData = NamedTupleData.fromDataTree(dataTree);
-        return DataItem(
-          dataItemType: DataItemType(
-            basicDataItemType: BasicDataItemType.namedTuple,
-            namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
-                elementTypeConfig: namedTupleData.elementTypeConfig),
-          ),
-          namedTupleData: namedTupleData,
-        );
-      default:
-        throw Exception(
-            "Invalid data tree passed to `fromDataTree`: $dataTree");
-    }
-  }
-
-  @override
-  dynamic toDataTree() {
+  /// Serializes the data item to a data tree.
+  ///
+  /// The type information is not serialized.
+  dynamic serializeDataToDataTree() {
     switch (dataItemType.basicDataItemType) {
       case BasicDataItemType.string:
-        return stringData!.toDataTree();
+        return stringData!.serializeDataToDataTree();
       case BasicDataItemType.array:
-        return arrayData!.toDataTree();
+        return arrayData!.serializeDataToDataTree();
       case BasicDataItemType.namedTuple:
-        return namedTupleData!.toDataTree();
+        return namedTupleData!.serializeDataToDataTree();
     }
   }
 
@@ -298,4 +250,19 @@ class DataItem extends ChangeNotifier
       stringData.hashCode ^
       arrayData.hashCode ^
       namedTupleData.hashCode;
+
+  @override
+  dynamic toDataTree() {
+    return {
+      "type": dataItemType.toDataTree(),
+      "data": serializeDataToDataTree(),
+    };
+  }
+
+  // static method override
+  static DataItem fromDataTree(dynamic dataTree) {
+    assert(dataTree is Map<String, dynamic>);
+    DataItemType dataItemType = DataItemType.fromDataTree(dataTree['type']);
+    return dataItemType.deserializeDataItem(dataTree['data']);
+  }
 }

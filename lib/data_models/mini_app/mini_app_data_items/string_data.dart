@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../../data_tree_convertible.dart';
 
-class StringData extends ChangeNotifier implements DataTreeDeserializable, DataTreeSerializable {
+class StringData extends ChangeNotifier {
   StringData({String? data}) : _data = data ?? "";
 
   String _data;
@@ -16,24 +16,7 @@ class StringData extends ChangeNotifier implements DataTreeDeserializable, DataT
   @override
   String toString() => 'StringData($_data)';
 
-  // static method override
-  static StringData fromDataTree(dynamic dataTree) {
-    assert(dataTree is Map<String, dynamic>);
-    assert(dataTree['type']['basic-type'] == 'string');
-    assert(dataTree['data'] is String);
-
-    return StringData(data: dataTree['data'].toString());
-  }
-
-  @override
-  Map<String, dynamic> toDataTree() {
-    return {
-      'type': {
-        'basic-type': 'string',
-      },
-      'data': _data
-    };
-  }
+  dynamic serializeDataToDataTree() => data;
 
   @override
   bool operator ==(Object other) {

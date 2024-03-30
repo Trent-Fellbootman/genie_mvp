@@ -1,49 +1,29 @@
 import 'package:flutter/foundation.dart';
 
 import 'data_item.dart';
-import '../../data_tree_convertible.dart';
 
-class NamedTupleData extends ChangeNotifier
-    implements DataTreeDeserializable, DataTreeSerializable {
-  NamedTupleData({required this.elementTypeConfig, required this.elements});
+class NamedTupleData extends ChangeNotifier {
+  NamedTupleData({required elementTypeConfig, required elements}) : _elementTypeConfig = elementTypeConfig, _elements = elements;
 
-  final Map<String, DataItemType> elementTypeConfig;
-  final Map<String, DataItem> elements;
+  final Map<String, DataItemType> _elementTypeConfig;
+  final Map<String, DataItem> _elements;
+
+  Map<String, DataItemType> get elementTypeConfig => _elementTypeConfig;
+  Map<String, DataItem> get elements => _elements;
 
   @override
   String toString() {
     List<String> elementStrings = [
-      for (var element in elements.entries)
+      for (var element in _elements.entries)
         "${element.key}: ${element.value},\n"
     ];
 
     return "NamedTuple{\n${elementStrings.join()}}";
   }
 
-  // static method override
-  static NamedTupleData fromDataTree(dynamic dataTree) {
-    assert(dataTree['type']['basic-type'] == 'named-tuple');
-    Map<String, dynamic> elementsDataTree = dataTree['data'];
-
-    Map<String, DataItem> elements = elementsDataTree
-        .map((key, value) => MapEntry(key, DataItem.fromDataTree(value)));
-    Map<String, DataItemType> elementTypeConfig =
-        elements.map((key, value) => MapEntry(key, value.dataItemType));
-
-    return NamedTupleData(
-        elementTypeConfig: elementTypeConfig, elements: elements);
-  }
-
-  @override
-  toDataTree() {
-    return {
-      'type': {
-        'basic-type': 'named-tuple',
-        'auxiliary-data': elementTypeConfig
-            .map((key, value) => MapEntry(key, value.toDataTree())),
-      },
-      'data': elements.map((key, value) => MapEntry(key, value.toDataTree()))
-    };
+  dynamic serializeDataToDataTree() {
+    return _elements
+        .map((key, value) => MapEntry(key, value.serializeDataToDataTree()));
   }
 
   @override
@@ -51,12 +31,12 @@ class NamedTupleData extends ChangeNotifier
     if (identical(this, other)) return true;
 
     return other is NamedTupleData &&
-        mapEquals(other.elementTypeConfig, elementTypeConfig) &&
-        mapEquals(other.elements, elements);
+        mapEquals(other._elementTypeConfig, _elementTypeConfig) &&
+        mapEquals(other._elements, _elements);
   }
 
   @override
-  int get hashCode => elementTypeConfig.hashCode ^ elements.hashCode;
+  int get hashCode => _elementTypeConfig.hashCode ^ _elements.hashCode;
 }
 
 class NamedTupleAuxiliaryTypeData {
