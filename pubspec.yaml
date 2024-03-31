@@ -37,10 +37,11 @@ dependencies:
   cupertino_icons: ^1.0.6
   provider: ^6.1.2
   flutter_markdown: ^0.6.22
-  dio: ^5.4.2
+  dio: ^5.4.2+1
   infinite_scroll_pagination: ^4.0.0
   loading_animation_widget: ^1.2.1
   json_serializable: ^6.7.1
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

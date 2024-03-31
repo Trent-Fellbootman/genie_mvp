@@ -7,16 +7,27 @@ import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/array_data.da
 import 'package:genie_mvp/data_models/data_types/integer_data.dart';
 
 import 'dart:math';
+import 'package:dio/dio.dart';
 
-class Credentials {
-  const Credentials({required this.token});
+class Token {
+  const Token({required this.accessToken});
 
-  final String token;
+  final String accessToken;
+}
+
+final dio = Dio();
+
+// TODO: replace with real url
+const String apiBaseURL = "http://127.0.0.1:8000";
+
+class LoginCredentials {
+  const LoginCredentials({required this.username, required this.password});
+
+  final String username;
+  final String password;
 }
 
 class BackendClient {
-  static Credentials? credentials;
-
   static MiniAppSpecification mockMiniAppSpecification = MiniAppSpecification(
     inputOutputSpecification: MiniAppInputOutputSpecification(
       inputTypeDeclaration: DataItemType(
@@ -77,5 +88,20 @@ class BackendClient {
     } else {
       throw Exception("An error occurred.");
     }
+  }
+
+  static Future<Token> login(LoginCredentials loginCredentials) async {
+    final Response response = await dio.post(
+      "http://127.0.0.1:8000/token",
+      data: {
+        "username": 'johndoe',
+        "password": 'secret',
+      },
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType, // This line is key
+      ),
+    );
+    assert(response.data['access_token'] is String);
+    return Token(accessToken: response.data['access_token']);
   }
 }
