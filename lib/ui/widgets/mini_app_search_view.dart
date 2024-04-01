@@ -78,7 +78,7 @@ class _MiniAppSearchResultDisplayViewState
   Future<void> _fetchPage(pageKey) async {
     try {
       final MiniAppSearchPageResponse response =
-          await BackendClient.pageSearchSession(
+          await BackendClient.searchPage(
         MiniAppSearchPageRequest(
           searchParameters: widget.searchParameters,
           pageIndex: pageKey,

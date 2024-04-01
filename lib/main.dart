@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:genie_mvp/ui/pages/ai_mini_app_generation_page.dart';
+import 'package:genie_mvp/ui/pages/login_page.dart';
 import 'package:genie_mvp/ui/pages/mini_app_search_page.dart';
+import 'package:genie_mvp/ui/pages/setup_token_page.dart';
 import 'package:genie_mvp/ui/widgets/ai_app_generation_view.dart';
 import 'package:genie_mvp/ui/widgets/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/widgets/mini_app_search_view.dart';
@@ -42,16 +44,18 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        '/': (context) => const MiniAppSearchPage(),
+        '/': (context) => const SetUpTokenPage(),
+        '/home': (context) => const MiniAppSearchPage(),
+        '/login': (context) => const LoginPage(),
         '/ai_app_generation_page': (context) => const AIMiniAppGenerationPage(),
       },
       // home: const Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),
-        // ),
-        // body: SafeArea(
-          // child: AIMiniAppGenerationView(),
-          // child: MiniAppSearchView(),
+      // appBar: AppBar(
+      //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),
+      // ),
+      // body: SafeArea(
+      // child: AIMiniAppGenerationView(),
+      // child: MiniAppSearchView(),
 //           child: MiniAppView(appSpecification: MiniAppSpecification(
 //             inputOutputSpecification: MiniAppInputOutputSpecification(
 //               inputTypeDeclaration: DataItemType(

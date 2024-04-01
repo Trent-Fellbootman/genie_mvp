@@ -6,6 +6,8 @@ import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dar
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/array_data.dart';
 import 'package:genie_mvp/data_models/data_types/integer_data.dart';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'dart:math';
 import 'package:dio/dio.dart';
 
@@ -16,18 +18,21 @@ class Token {
 }
 
 final dio = Dio();
+const storage = FlutterSecureStorage();
 
 // TODO: replace with real url
 const String apiBaseURL = "http://127.0.0.1:8000";
 
 class LoginCredentials {
-  const LoginCredentials({required this.username, required this.password});
+  const LoginCredentials({required this.userID, required this.password});
 
-  final String username;
+  final String userID;
   final String password;
 }
 
 class BackendClient {
+  static Token? token;
+
   static MiniAppSpecification mockMiniAppSpecification = MiniAppSpecification(
     inputOutputSpecification: MiniAppInputOutputSpecification(
       inputTypeDeclaration: DataItemType(
@@ -52,7 +57,7 @@ class BackendClient {
   );
 
   /// Retrieves a page of items for a search session.
-  static Future<MiniAppSearchPageResponse> pageSearchSession(
+  static Future<MiniAppSearchPageResponse> searchPage(
       MiniAppSearchPageRequest request) async {
     // TODO: remove mock implementation
     MiniAppSpecification mockSpecification = mockMiniAppSpecification;
@@ -90,18 +95,52 @@ class BackendClient {
     }
   }
 
-  static Future<Token> login(LoginCredentials loginCredentials) async {
+  /// Tries to read the token from local storage
+  /// and validate the token.
+  ///
+  /// Returns error if token does not exist
+  /// or is not valid.
+  static Future<void> setUpToken() async {
+    token = null;
+
+    final String? accessToken = await storage.read(key: 'access-token');
+
+    if (accessToken == null) {
+      throw Exception("Token not found in local storage!");
+    }
+
+    // ensure that the token is valid
     final Response response = await dio.post(
-      "http://127.0.0.1:8000/token",
+      "$apiBaseURL/ping",
+      options: Options(
+        headers: {
+          "Authorization": "Bearer $accessToken",
+        }
+      )
+    );
+
+    token = Token(accessToken: accessToken);
+  }
+
+  /// Retrieves a new token and updates the stored token.
+  static Future<void> login(LoginCredentials loginCredentials) async {
+    // retrieve a new token
+    final Response response = await dio.post(
+      "$apiBaseURL/token",
       data: {
-        "username": 'johndoe',
-        "password": 'secret',
+        "username": loginCredentials.userID,
+        "password": loginCredentials.password,
       },
       options: Options(
-        contentType: Headers.formUrlEncodedContentType, // This line is key
+        contentType: Headers.formUrlEncodedContentType,
       ),
     );
     assert(response.data['access_token'] is String);
-    return Token(accessToken: response.data['access_token']);
+
+    // update the token stored in memory
+    token = Token(accessToken: response.data['access_token']);
+
+    // update the token stored on disk
+    await storage.write(key: "access-token", value: token!.accessToken);
   }
 }
