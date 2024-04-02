@@ -37,4 +37,23 @@ class MiniAppSpecification {
 
   final MiniAppInputOutputSpecification inputOutputSpecification;
   final MiniAppSpecificationMetadata metadata;
+
+  static MiniAppSpecification fromDataTree(dynamic dataTree) {
+    assert(dataTree is Map<String, dynamic>);
+    return MiniAppSpecification(
+      metadata: MiniAppSpecificationMetadata(
+        miniAppID: dataTree['id'],
+        name: dataTree['name'],
+        description: dataTree['description'],
+        // TODO: remove mock default value
+        likes: IntegerData(value: 0),
+        // TODO: remove mock default value
+        dislikes: IntegerData(value: 0),
+      ),
+      inputOutputSpecification: MiniAppInputOutputSpecification(
+        inputTypeDeclaration: DataItemType.fromDataTree(dataTree['input_type_declaration']),
+        outputTypeDeclaration: DataItemType.fromDataTree(dataTree['output_type_declaration']),
+      )
+    );
+  }
 }

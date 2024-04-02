@@ -34,10 +34,10 @@ class RemoteBackendClient implements BackendBase {
           basicDataItemType: BasicDataItemType.array,
           arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
               itemType: DataItemType(
-                basicDataItemType: BasicDataItemType.string,
-              ))),
+            basicDataItemType: BasicDataItemType.string,
+          ))),
       outputTypeDeclaration:
-      DataItemType(basicDataItemType: BasicDataItemType.string),
+          DataItemType(basicDataItemType: BasicDataItemType.string),
     ),
     metadata: MiniAppSpecificationMetadata(
       miniAppID: "test-id",
@@ -54,17 +54,31 @@ class RemoteBackendClient implements BackendBase {
   @override
   Future<MiniAppSearchPageResponse> searchPage(
       MiniAppSearchPageRequest request) async {
-    // TODO: remove mock implementation
-    MiniAppSpecification mockSpecification = mockMiniAppSpecification;
-    await Future.delayed(const Duration(seconds: 1));
+    final searchParameters = request.searchParameters;
+    final data = {
+      'parameters': {
+        'query': searchParameters.searchQuery,
+      },
+      'page_index': request.pageIndex,
+      'page_size': request.pageSize
+    };
+
+    final Response response = await dio.get('$apiBaseURL/search-page',
+        data: data, options: Options(headers: getAuthorizationHeader()));
+
+    List<dynamic> miniAppSpecificationsData =
+        response.data['mini_app_specifications'];
+
+    List<MiniAppSpecification> miniAppSpecifications = miniAppSpecificationsData
+        .map((e) => MiniAppSpecification.fromDataTree(e))
+        .toList();
+
     return MiniAppSearchPageResponse(
-        miniAppSpecifications:
-        List.filled(request.pageSize, mockSpecification));
+        miniAppSpecifications: miniAppSpecifications);
   }
 
   @override
-  Future<MiniAppRunResponse> runMiniApp(
-      MiniAppRunRequest request) async {
+  Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request) async {
     // TODO: remove mock implementation
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
@@ -129,4 +143,7 @@ class RemoteBackendClient implements BackendBase {
     // update the token stored on disk
     await storage.write(key: "access-token", value: token!.accessToken);
   }
+
+  Map<String, String> getAuthorizationHeader() =>
+      {"Authorization": "Bearer ${token!.accessToken}"};
 }
