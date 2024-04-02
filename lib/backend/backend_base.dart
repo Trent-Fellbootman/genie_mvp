@@ -1,0 +1,26 @@
+import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
+import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
+import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
+import 'package:genie_mvp/data_models/backend_api/login.dart';
+
+abstract class BackendBase {
+  /// Retrieves a page of items for a search session.
+  Future<MiniAppSearchPageResponse> searchPage(
+      MiniAppSearchPageRequest request);
+
+  /// Runs a mini app, returning the output data.
+  Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request);
+
+  Future<AIMiniAppGenerationResponse> aiGenerateMiniApp(
+      AIMiniAppGenerationRequest request);
+
+  /// Tries to read the token from local storage
+  /// and validate the token.
+  ///
+  /// Returns error if token does not exist
+  /// or is not valid.
+  Future<void> setUpToken();
+
+  /// Retrieves a new token and updates the stored token.
+  Future<void> login(LoginCredentials loginCredentials);
+}

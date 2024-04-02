@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genie_mvp/backend/backend_client.dart';
+import 'package:genie_mvp/data_models/backend_api/login.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginView extends StatefulWidget {
