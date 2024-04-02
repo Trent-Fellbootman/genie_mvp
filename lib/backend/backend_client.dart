@@ -110,20 +110,17 @@ class BackendClient {
     }
 
     // ensure that the token is valid
-    final Response response = await dio.post(
-      "$apiBaseURL/ping",
-      options: Options(
-        headers: {
+    final Response response = await dio.post("$apiBaseURL/ping",
+        options: Options(headers: {
           "Authorization": "Bearer $accessToken",
-        }
-      )
-    );
+        }));
 
     token = Token(accessToken: accessToken);
   }
 
   /// Retrieves a new token and updates the stored token.
   static Future<void> login(LoginCredentials loginCredentials) async {
+    await Future.delayed(Duration(seconds: 1));
     // retrieve a new token
     final Response response = await dio.post(
       "$apiBaseURL/token",
