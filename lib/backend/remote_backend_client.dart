@@ -63,8 +63,11 @@ class RemoteBackendClient implements BackendBase {
       'page_size': request.pageSize
     };
 
-    final Response response = await dio.get('$apiBaseURL/search-page',
-        data: data, options: Options(headers: getAuthorizationHeader()));
+    final Response response = await dio.post(
+      '$apiBaseURL/search-page',
+      data: data,
+      options: Options(headers: getAuthorizationHeader()),
+    );
 
     List<dynamic> miniAppSpecificationsData =
         response.data['mini_app_specifications'];
@@ -74,7 +77,8 @@ class RemoteBackendClient implements BackendBase {
         .toList();
 
     return MiniAppSearchPageResponse(
-        miniAppSpecifications: miniAppSpecifications);
+      miniAppSpecifications: miniAppSpecifications,
+    );
   }
 
   @override

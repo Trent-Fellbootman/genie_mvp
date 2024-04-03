@@ -42,7 +42,7 @@ class MiniAppSpecification {
     assert(dataTree is Map<String, dynamic>);
     return MiniAppSpecification(
       metadata: MiniAppSpecificationMetadata(
-        miniAppID: dataTree['id'],
+        miniAppID: dataTree['mini_app_id'],
         name: dataTree['name'],
         description: dataTree['description'],
         // TODO: remove mock default value
