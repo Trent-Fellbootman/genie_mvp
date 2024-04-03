@@ -79,14 +79,16 @@ class RemoteBackendClient implements BackendBase {
 
   @override
   Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request) async {
-    // TODO: remove mock implementation
-    Random rng = Random();
-    await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
-      return MiniAppRunResponse(outputData: request.inputData);
-    } else {
-      throw Exception("An error occurred.");
-    }
+    final data = {
+      'mini_app_id': request.appID,
+      'input_data': request.inputData.toDataTree(),
+    };
+
+    final Response response = await dio.post('$apiBaseURL/run-mini-app',
+        data: data, options: Options(headers: getAuthorizationHeader()));
+
+    return MiniAppRunResponse(
+        outputData: DataItem.fromDataTree(response.data['output_data']));
   }
 
   @override
