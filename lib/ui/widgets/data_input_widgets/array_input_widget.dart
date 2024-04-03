@@ -25,7 +25,7 @@ class ArrayInputWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   // Builds each item
                   DataItem dataItem = listData.getValue(index)!;
-                  return Row(key: ValueKey(dataItem), children: [
+                  return Row(key: ObjectKey(dataItem), children: [
                     const Icon(Icons.drag_handle),
                     Expanded(
                         child: DataItemInputWidget(dataItem: dataItem),
