@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/file_data.dart';
 import 'package:genie_mvp/ui/pages/ai_mini_app_generation_page.dart';
 import 'package:genie_mvp/ui/pages/login_page.dart';
 import 'package:genie_mvp/ui/pages/mini_app_search_page.dart';
 import 'package:genie_mvp/ui/pages/setup_token_page.dart';
 import 'package:genie_mvp/ui/widgets/ai_app_generation_view.dart';
 import 'package:genie_mvp/ui/widgets/data_input_widgets/data_item_input_widget.dart';
+import 'package:genie_mvp/ui/widgets/data_input_widgets/file_input_widget.dart';
 import 'package:genie_mvp/ui/widgets/mini_app_search_view.dart';
 
 import 'data_models/mini_app/mini_app_data_items/array_data.dart';
@@ -43,12 +45,20 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routes: {
-        '/': (context) => const SetUpTokenPage(),
-        '/home': (context) => const MiniAppSearchPage(),
-        '/login': (context) => const LoginPage(),
-        '/ai_app_generation_page': (context) => const AIMiniAppGenerationPage(),
-      },
+      // routes: {
+      //   '/': (context) => const SetUpTokenPage(),
+      //   '/home': (context) => const MiniAppSearchPage(),
+      //   '/login': (context) => const LoginPage(),
+      //   '/ai_app_generation_page': (context) =>
+      //       const AIMiniAppGenerationPage(),
+      // },
+      home: Scaffold(
+        body: SafeArea(
+          child: FileInputWidget(
+            fileDataInstance: FileData(),
+          ),
+        ),
+      ),
       // home: const Scaffold(
       // appBar: AppBar(
       //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),

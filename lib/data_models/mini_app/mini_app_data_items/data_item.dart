@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-import 'named_tuple.dart';
 import 'string_data.dart';
+import 'file_data.dart';
 import 'array_data.dart';
+import 'named_tuple.dart';
 
 import '../../data_tree_convertible.dart';
 
-enum BasicDataItemType { string, array, namedTuple }
+enum BasicDataItemType { string, file, array, namedTuple }
 
 // TODO: unit tests
 /// ## Serialization Scheme Examples
@@ -15,6 +16,12 @@ enum BasicDataItemType { string, array, namedTuple }
 ///
 /// {
 ///   "basic-type": "string"
+/// }
+///
+/// ### File
+///
+/// {
+///   "basic-type": "file"
 /// }
 ///
 /// ### Array
@@ -69,6 +76,8 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
     switch (basicDataItemType) {
       case BasicDataItemType.string:
         return 'DataItemType::string';
+      case BasicDataItemType.file:
+        return 'DataItemType::file';
       case BasicDataItemType.array:
         return 'DataItemType::array<${arrayAuxiliaryTypeData!.itemType}>';
       case BasicDataItemType.namedTuple:
@@ -82,6 +91,8 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
       case BasicDataItemType.string:
         return DataItem(
             dataItemType: this, stringData: StringData(data: dataTree));
+      case BasicDataItemType.file:
+        return DataItem(dataItemType: this, fileData: FileData(fileID: dataTree));
       case BasicDataItemType.array:
         DataItemType itemType = arrayAuxiliaryTypeData!.itemType;
         List<DataItem> items = (dataTree as List)
@@ -110,6 +121,8 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
     switch (dataTree["basic-type"]) {
       case "string":
         return DataItemType(basicDataItemType: BasicDataItemType.string);
+      case "file":
+        return DataItemType(basicDataItemType: BasicDataItemType.file);
       case "array":
         return DataItemType(
           basicDataItemType: BasicDataItemType.array,
@@ -138,6 +151,10 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
         return {
           "basic-type": "string",
         };
+      case BasicDataItemType.file:
+        return {
+          "basic-type": "file",
+        };
       case BasicDataItemType.array:
         return {
           "basic-type": "array",
@@ -159,6 +176,10 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
 ///
 /// "data"
 ///
+/// ### file
+///
+/// "file.pdf"
+///
 /// ### Array
 ///
 /// ["data"]
@@ -173,11 +194,13 @@ class DataItem extends ChangeNotifier
   DataItem(
       {required this.dataItemType,
       this.stringData,
+      this.fileData,
       this.arrayData,
       this.namedTupleData});
 
   final DataItemType dataItemType;
   final StringData? stringData;
+  final FileData? fileData;
   final ArrayData? arrayData;
   final NamedTupleData? namedTupleData;
 
@@ -192,6 +215,8 @@ class DataItem extends ChangeNotifier
             itemType: dataItemType.arrayAuxiliaryTypeData!.itemType,
           ),
         );
+      case BasicDataItemType.file:
+        return DataItem(dataItemType: dataItemType, fileData: FileData());
       case BasicDataItemType.namedTuple:
         return DataItem(
           dataItemType: dataItemType,
@@ -212,6 +237,8 @@ class DataItem extends ChangeNotifier
     switch (dataItemType.basicDataItemType) {
       case BasicDataItemType.string:
         return 'DataItem::String(${stringData!})';
+      case BasicDataItemType.file:
+        return 'DataItem::File(${fileData!})';
       case BasicDataItemType.array:
         return 'DataItem::Array<${arrayData!.itemType}>(${arrayData!})';
       case BasicDataItemType.namedTuple:
@@ -226,6 +253,8 @@ class DataItem extends ChangeNotifier
     switch (dataItemType.basicDataItemType) {
       case BasicDataItemType.string:
         return stringData!.serializeDataToDataTree();
+      case BasicDataItemType.file:
+        return fileData!.serializeDataToDataTree();
       case BasicDataItemType.array:
         return arrayData!.serializeDataToDataTree();
       case BasicDataItemType.namedTuple:

@@ -1,4 +1,5 @@
 import 'package:genie_mvp/backend/backend_base.dart';
+import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
 import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
@@ -7,8 +8,6 @@ import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart'
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/array_data.dart';
 import 'package:genie_mvp/data_models/data_types/integer_data.dart';
-
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'dart:math';
 import 'package:dio/dio.dart';
@@ -22,10 +21,10 @@ class MockBackendClient implements BackendBase {
           basicDataItemType: BasicDataItemType.array,
           arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
               itemType: DataItemType(
-                basicDataItemType: BasicDataItemType.string,
-              ))),
+            basicDataItemType: BasicDataItemType.string,
+          ))),
       outputTypeDeclaration:
-      DataItemType(basicDataItemType: BasicDataItemType.string),
+          DataItemType(basicDataItemType: BasicDataItemType.string),
     ),
     metadata: MiniAppSpecificationMetadata(
       miniAppID: "test-id",
@@ -47,12 +46,11 @@ class MockBackendClient implements BackendBase {
     await Future.delayed(const Duration(seconds: 1));
     return MiniAppSearchPageResponse(
         miniAppSpecifications:
-        List.filled(request.pageSize, mockSpecification));
+            List.filled(request.pageSize, mockSpecification));
   }
 
   @override
-  Future<MiniAppRunResponse> runMiniApp(
-      MiniAppRunRequest request) async {
+  Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request) async {
     // TODO: remove mock implementation
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
@@ -79,11 +77,39 @@ class MockBackendClient implements BackendBase {
 
   @override
   Future<void> setUpToken() async {
+    Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextBool()) {
+      throw Exception("An error occurred.");
+    }
   }
 
   @override
   Future<void> login(LoginCredentials loginCredentials) async {
+    Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextBool()) {
+      throw Exception("An error occurred.");
+    }
+  }
+
+  @override
+  Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
+    Random rng = Random();
+    await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextBool()) {
+      throw Exception("An error occurred.");
+    }
+    return const FileDownloadResponse(filepath: "mock-path.md");
+  }
+
+  @override
+  Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
+    Random rng = Random();
+    await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextBool()) {
+      throw Exception("An error occurred.");
+    }
+    return const FileUploadResponse(fileID: "mock-id");
   }
 }

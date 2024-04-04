@@ -4,10 +4,11 @@ import 'package:genie_mvp/backend/remote_backend_client.dart';
 import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
+import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/login.dart';
 
 class BackendClient {
-  static final BackendBase _backend = RemoteBackendClient();
+  static final BackendBase _backend = MockBackendClient();
 
   static Future<AIMiniAppGenerationResponse> aiGenerateMiniApp(
       AIMiniAppGenerationRequest request) async {
@@ -26,6 +27,14 @@ class BackendClient {
   static Future<MiniAppSearchPageResponse> searchPage(
       MiniAppSearchPageRequest request) async {
     return await _backend.searchPage(request);
+  }
+
+  static Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
+    return await _backend.downloadFile(request);
+  }
+
+  static Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
+    return await _backend.uploadFile(request);
   }
 
   static Future<void> setUpToken() async {

@@ -1,4 +1,5 @@
 import 'package:genie_mvp/backend/backend_base.dart';
+import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
 import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
@@ -152,4 +153,16 @@ class RemoteBackendClient implements BackendBase {
 
   Map<String, String> getAuthorizationHeader() =>
       {"Authorization": "Bearer ${token!.accessToken}"};
+
+  @override
+  Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
+    // TODO: implement downloadFile
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
+    // TODO: implement uploadFile
+    throw UnimplementedError();
+  }
 }
