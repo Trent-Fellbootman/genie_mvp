@@ -8,7 +8,7 @@ import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/login.dart';
 
 class BackendClient {
-  static final BackendBase _backend = MockBackendClient();
+  static final BackendBase _backend = RemoteBackendClient();
 
   static Future<AIMiniAppGenerationResponse> aiGenerateMiniApp(
       AIMiniAppGenerationRequest request) async {
