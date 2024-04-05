@@ -15,7 +15,25 @@ class MiniAppSearchView extends StatefulWidget {
 }
 
 class _MiniAppSearchViewState extends State<MiniAppSearchView> {
-  MiniAppSearchParameters? searchParameters;
+  static const int _pageSize = 5;
+  MiniAppSearchParameters? _searchParameters;
+  final PagingController<int, MiniAppSpecification> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,56 +49,35 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
             hintText: "试试搜索你需要的功能，比如“随机选食堂”",
             onSubmitted: (value) {
               setState(() {
-                searchParameters = MiniAppSearchParameters(searchQuery: value);
+                _searchParameters = MiniAppSearchParameters(searchQuery: value);
+                _pagingController.refresh();
               });
             },
           ),
         ),
-        searchParameters == null
+        _searchParameters == null
             ? Container()
             : Expanded(
-                child: MiniAppSearchResultDisplayView(
-                    searchParameters: searchParameters!),
+                child: PagedListView(
+                  shrinkWrap: true,
+                  pagingController: _pagingController,
+                  builderDelegate:
+                      PagedChildBuilderDelegate<MiniAppSpecification>(
+                    itemBuilder: (context, item, index) {
+                      return MiniAppCard(miniAppSpecification: item);
+                    },
+                  ),
+                ),
               ),
       ],
     );
-  }
-}
-
-class MiniAppSearchResultDisplayView extends StatefulWidget {
-  const MiniAppSearchResultDisplayView({
-    super.key,
-    required this.searchParameters,
-  });
-
-  final MiniAppSearchParameters searchParameters;
-
-  @override
-  State<MiniAppSearchResultDisplayView> createState() =>
-      _MiniAppSearchResultDisplayViewState();
-}
-
-class _MiniAppSearchResultDisplayViewState
-    extends State<MiniAppSearchResultDisplayView> {
-  static const int _pageSize = 5;
-
-  final PagingController<int, MiniAppSpecification> _pagingController =
-      PagingController(firstPageKey: 0);
-
-  @override
-  void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
-
-    super.initState();
   }
 
   Future<void> _fetchPage(pageKey) async {
     try {
       final MiniAppSearchPageResponse response = await BackendClient.searchPage(
         MiniAppSearchPageRequest(
-          searchParameters: widget.searchParameters,
+          searchParameters: _searchParameters!,
           pageIndex: pageKey,
           pageSize: _pageSize,
         ),
@@ -99,25 +96,6 @@ class _MiniAppSearchResultDisplayViewState
     } catch (error) {
       _pagingController.error = error;
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PagedListView(
-      shrinkWrap: true,
-      pagingController: _pagingController,
-      builderDelegate: PagedChildBuilderDelegate<MiniAppSpecification>(
-        itemBuilder: (context, item, index) {
-          return MiniAppCard(miniAppSpecification: item);
-        },
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 }
 
