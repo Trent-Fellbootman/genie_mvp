@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/named_tuple.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
+import 'data_item_display_widget.dart';
+import 'package:provider/provider.dart';
+
+class NamedTupleDisplayWidget extends StatelessWidget {
+  const NamedTupleDisplayWidget(
+      {super.key, required this.namedTupleDataInstance});
+
+  final NamedTupleData namedTupleDataInstance;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<NamedTupleData>.value(
+      value: namedTupleDataInstance,
+      child: Card(
+        elevation: 4,
+        child: ExpansionTile(title: const Text("点击展开/收回表格"), children: [
+          Consumer<NamedTupleData>(
+            builder: (context, namedTupleData, child) {
+              List<Widget> children = [];
+              for (var element in namedTupleData.elements.entries) {
+                DataItem dataItem = element.value;
+                children.add(DataItemDisplayWidget(dataItem: dataItem));
+              }
+              return ListView(
+                shrinkWrap: true,
+                children: children,
+              );
+            },
+          )
+        ]),
+      ),
+    );
+  }
+}

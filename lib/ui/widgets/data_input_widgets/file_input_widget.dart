@@ -36,7 +36,7 @@ class _FileInputWidgetState extends State<FileInputWidget> {
                       : p.basename(fileData.filepath!),
                 ),
               ),
-              // upload button
+              // pick file button
               IconButton(
                 onPressed: () {
                   FilePicker.platform.pickFiles().then(

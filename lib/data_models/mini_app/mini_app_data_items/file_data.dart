@@ -46,4 +46,15 @@ class FileData extends ChangeNotifier {
     }
     return _fileID!;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    assert(other is FileData && other._fileID != null);
+
+    return other is FileData && _fileID == other._fileID;
+  }
+
+  @override
+  int get hashCode => _filepath.hashCode ^ _fileID.hashCode;
 }

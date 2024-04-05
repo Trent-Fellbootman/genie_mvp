@@ -5,6 +5,7 @@ import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dar
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/array_data.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/named_tuple.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/string_data.dart';
+import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/file_data.dart';
 
 void main() {
   group(
@@ -13,20 +14,22 @@ void main() {
     // sample objects
     DataItemType stringType =
         DataItemType(basicDataItemType: BasicDataItemType.string);
+    DataItemType fileType =
+        DataItemType(basicDataItemType: BasicDataItemType.file);
     DataItemType stringArrayType = DataItemType(
         basicDataItemType: BasicDataItemType.array,
         arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(itemType: stringType));
-    DataItemType stringAndStringArrayNamedTupleType = DataItemType(
+    DataItemType fileAndStringArrayNamedTupleType = DataItemType(
         basicDataItemType: BasicDataItemType.namedTuple,
         namedTupleAuxiliaryTypeData: NamedTupleAuxiliaryTypeData(
             elementTypeConfig: {
-              "value 1": stringType,
+              "value 1": fileType,
               "value 2": stringArrayType
             }));
     DataItemType tupleArrayType = DataItemType(
         basicDataItemType: BasicDataItemType.array,
         arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
-            itemType: stringAndStringArrayNamedTupleType));
+            itemType: fileAndStringArrayNamedTupleType));
     DataItemType topLevelNamedTupleType = DataItemType(
         basicDataItemType: BasicDataItemType.namedTuple,
         namedTupleAuxiliaryTypeData:
@@ -43,17 +46,17 @@ void main() {
           "value 1": DataItem(
               dataItemType: tupleArrayType,
               arrayData: ArrayData(
-                itemType: stringAndStringArrayNamedTupleType,
+                itemType: fileAndStringArrayNamedTupleType,
                 data: [
                   DataItem(
-                      dataItemType: stringAndStringArrayNamedTupleType,
+                      dataItemType: fileAndStringArrayNamedTupleType,
                       namedTupleData: NamedTupleData(elementTypeConfig: {
-                        "value 1": stringType,
+                        "value 1": fileType,
                         "value 2": stringArrayType,
                       }, elements: {
                         "value 1": DataItem(
-                          dataItemType: stringType,
-                          stringData: StringData(data: "hello"),
+                          dataItemType: fileType,
+                          fileData: FileData(fileID: "test-id"),
                         ),
                         "value 2": DataItem(
                             dataItemType: stringArrayType,

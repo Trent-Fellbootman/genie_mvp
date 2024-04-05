@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:genie_mvp/backend/backend_base.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
@@ -11,8 +13,11 @@ import 'package:genie_mvp/data_models/data_types/integer_data.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 class Token {
   const Token({required this.accessToken});
@@ -156,13 +161,62 @@ class RemoteBackendClient implements BackendBase {
 
   @override
   Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
-    // TODO: implement downloadFile
-    throw UnimplementedError();
+    final response = await dio.get(
+      '$apiBaseURL/download-file',
+      queryParameters: {'file_id': request.fileID},
+      options: Options(
+        responseType: ResponseType.bytes,
+        headers: getAuthorizationHeader(),
+      ),
+    );
+
+    final String fileNameData =
+        response.headers.value('content-disposition')?.split('filename=')[1] ??
+            'downloaded_file';
+    dynamic fileName = jsonDecode(fileNameData);
+    assert(fileName is String);
+
+    final File file = await _getFile(fileName);
+
+    await file.writeAsBytes(response.data);
+
+    final String fileSavePath = file.absolute.path;
+
+    return FileDownloadResponse(filepath: fileSavePath);
   }
 
   @override
   Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
-    // TODO: implement uploadFile
-    throw UnimplementedError();
+    // Create a FormData object
+    FormData formData = FormData.fromMap(
+      {
+        "file": await MultipartFile.fromFile(
+          request.filepath,
+          filename: p.basename(request.filepath),
+        ),
+      },
+    );
+
+    // Make the POST request
+    Response response = await dio.post(
+      '$apiBaseURL/upload-file', // Replace with your actual URL
+      data: formData,
+      options: Options(headers: getAuthorizationHeader()),
+    );
+
+    // Check the response status and body
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to upload file. Status code: ${response.statusCode}');
+    }
+
+    assert(response.data is String);
+
+    return FileUploadResponse(fileID: response.data);
+  }
+
+  Future<File> _getFile(String fileName) async {
+    final Directory dir = await getApplicationDocumentsDirectory();
+    return File('${dir.path}/$fileName');
   }
 }

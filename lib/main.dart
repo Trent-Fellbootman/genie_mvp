@@ -45,20 +45,20 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // routes: {
-      //   '/': (context) => const SetUpTokenPage(),
-      //   '/home': (context) => const MiniAppSearchPage(),
-      //   '/login': (context) => const LoginPage(),
-      //   '/ai_app_generation_page': (context) =>
-      //       const AIMiniAppGenerationPage(),
-      // },
-      home: Scaffold(
-        body: SafeArea(
-          child: FileInputWidget(
-            fileDataInstance: FileData(),
-          ),
-        ),
-      ),
+      routes: {
+        '/': (context) => const SetUpTokenPage(),
+        '/home': (context) => const MiniAppSearchPage(),
+        '/login': (context) => const LoginPage(),
+        '/ai_app_generation_page': (context) =>
+            const AIMiniAppGenerationPage(),
+      },
+      // home: Scaffold(
+      //   body: SafeArea(
+      //     child: FileInputWidget(
+      //       fileDataInstance: FileData(),
+      //     ),
+      //   ),
+      // ),
       // home: const Scaffold(
       // appBar: AppBar(
       //   backgroundColor: const Color.fromARGB(255, 255, 0, 255),

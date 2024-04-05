@@ -6,6 +6,7 @@ import 'package:genie_mvp/data_models/backend_api/login.dart';
 void main() {
   // TODO: add logic check
   test(
+      skip: "This test requires local network connection to the backend server",
       "Test that login token can be obtained successfully and token can be used in later ping operation",
       () async {
     WidgetsFlutterBinding.ensureInitialized();

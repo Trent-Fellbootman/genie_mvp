@@ -21,10 +21,10 @@ class MockBackendClient implements BackendBase {
           basicDataItemType: BasicDataItemType.array,
           arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
               itemType: DataItemType(
-            basicDataItemType: BasicDataItemType.string,
+            basicDataItemType: BasicDataItemType.file,
           ))),
       outputTypeDeclaration:
-          DataItemType(basicDataItemType: BasicDataItemType.string),
+          DataItemType(basicDataItemType: BasicDataItemType.file),
     ),
     metadata: MiniAppSpecificationMetadata(
       miniAppID: "test-id",
