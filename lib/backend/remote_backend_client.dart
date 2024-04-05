@@ -176,7 +176,14 @@ class RemoteBackendClient implements BackendBase {
     dynamic fileName = jsonDecode(fileNameData);
     assert(fileName is String);
 
-    final File file = await _getFile(fileName);
+    // get the download directory
+    final Directory downloadDirectory = await getDownloadsDirectory() ?? Directory('/storage/emulated/0/Download');
+    // create the download directory if it doesn't exist
+    if (!(await downloadDirectory.exists())) {
+      await downloadDirectory.create(recursive: true);
+    }
+
+    final File file = File('${downloadDirectory.path}/$fileName');
 
     await file.writeAsBytes(response.data);
 
@@ -217,6 +224,7 @@ class RemoteBackendClient implements BackendBase {
 
   Future<File> _getFile(String fileName) async {
     final Directory dir = await getApplicationDocumentsDirectory();
+    print(dir.path);
     return File('${dir.path}/$fileName');
   }
 }
