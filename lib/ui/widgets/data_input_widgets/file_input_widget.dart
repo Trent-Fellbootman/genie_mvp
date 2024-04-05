@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:genie_mvp/backend/backend_client.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
+import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
@@ -30,11 +31,27 @@ class _FileInputWidgetState extends State<FileInputWidget> {
             children: [
               // file path display
               Expanded(
-                child: Text(
-                  fileData.filepath == null
-                      ? '（未选择文件）'
-                      : p.basename(fileData.filepath!),
-                ),
+                child: fileData.filepath == null
+                    ? const Text('（未选择文件）')
+                    : ElevatedButton(
+                        onPressed: () {
+                          // open file
+                          OpenFile.open(fileData.filepath!).then((value) {},
+                              onError: (error) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text('Failed to open file: $error'),
+                                );
+                              },
+                            );
+                          });
+                        },
+                        child: Text(
+                          p.basename(fileData.filepath!),
+                        ),
+                      ),
               ),
               // pick file button
               IconButton(

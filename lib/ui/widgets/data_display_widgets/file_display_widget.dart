@@ -32,7 +32,7 @@ class _FileDisplayWidgetState extends State<FileDisplayWidget> {
               Expanded(
                 child: fileData.filepath == null
                     ? Container()
-                    : FilledButton(
+                    : ElevatedButton(
                         onPressed: () {
                           // open file
                           OpenFile.open(fileData.filepath!).then((value) {},
@@ -48,7 +48,7 @@ class _FileDisplayWidgetState extends State<FileDisplayWidget> {
                           });
                         },
                         child: Text(
-                          p.basename(fileData.filepath!), style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                          p.basename(fileData.filepath!),
                         ),
                       ),
               ),
