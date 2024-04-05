@@ -15,25 +15,26 @@ class MiniAppSearchPage extends StatelessWidget {
             // search view
             const Expanded(child: MiniAppSearchView()),
             // AI app generation redirection widget
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "没有找到想要的APP？试试",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                FilledButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/ai_app_generation_page');
-                  },
-                  child: Text(
-                    "用AI生成小程序",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary),
-                  ),
-                ),
-              ],
-            )
+            // comment this out for now cuz AI app generation isn't ready yet
+            // Column(
+            //   mainAxisSize: MainAxisSize.min,
+            //   children: [
+            //     Text(
+            //       "没有找到想要的APP？试试",
+            //       style: Theme.of(context).textTheme.bodyLarge,
+            //     ),
+            //     FilledButton(
+            //       onPressed: () {
+            //         Navigator.of(context).pushNamed('/ai_app_generation_page');
+            //       },
+            //       child: Text(
+            //         "用AI生成小程序",
+            //         style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            //             color: Theme.of(context).colorScheme.onPrimary),
+            //       ),
+            //     ),
+            //   ],
+            // )
           ],
         ),
       ),

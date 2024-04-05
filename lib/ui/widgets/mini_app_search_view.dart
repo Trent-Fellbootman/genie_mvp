@@ -21,6 +21,7 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // search bar
         Container(
@@ -35,12 +36,12 @@ class _MiniAppSearchViewState extends State<MiniAppSearchView> {
             },
           ),
         ),
-        Expanded(
-          child: searchParameters == null
-              ? Container()
-              : MiniAppSearchResultDisplayView(
-                  searchParameters: searchParameters!),
-        ),
+        searchParameters == null
+            ? Container()
+            : Expanded(
+                child: MiniAppSearchResultDisplayView(
+                    searchParameters: searchParameters!),
+              ),
       ],
     );
   }
@@ -77,8 +78,7 @@ class _MiniAppSearchResultDisplayViewState
 
   Future<void> _fetchPage(pageKey) async {
     try {
-      final MiniAppSearchPageResponse response =
-          await BackendClient.searchPage(
+      final MiniAppSearchPageResponse response = await BackendClient.searchPage(
         MiniAppSearchPageRequest(
           searchParameters: widget.searchParameters,
           pageIndex: pageKey,
