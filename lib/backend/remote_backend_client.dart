@@ -30,6 +30,7 @@ const storage = FlutterSecureStorage();
 
 // TODO: replace with real url
 const String apiBaseURL = "http://207.148.88.30:8081";
+// const String apiBaseURL = "http://127.0.0.1:8000";
 
 class RemoteBackendClient implements BackendBase {
   Token? token;
@@ -220,11 +221,5 @@ class RemoteBackendClient implements BackendBase {
     assert(response.data is String);
 
     return FileUploadResponse(fileID: response.data);
-  }
-
-  Future<File> _getFile(String fileName) async {
-    final Directory dir = await getApplicationDocumentsDirectory();
-    print(dir.path);
-    return File('${dir.path}/$fileName');
   }
 }
