@@ -1,18 +1,19 @@
 import 'package:genie_mvp/backend/backend_base.dart';
 import 'package:genie_mvp/backend/mock_backend_client.dart';
 import 'package:genie_mvp/backend/remote_backend_client.dart';
-import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
+import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
+import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/login.dart';
 
 class BackendClient {
   static final BackendBase _backend = RemoteBackendClient();
 
-  static Future<AIMiniAppGenerationResponse> aiGenerateMiniApp(
-      AIMiniAppGenerationRequest request) async {
-    return await _backend.aiGenerateMiniApp(request);
+  static Future<MiniAppGenerationResponse> generateMiniApp(
+      MiniAppGenerationRequest request) async {
+    return await _backend.generateMiniApp(request);
   }
 
   static Future<void> login(LoginCredentials loginCredentials) async {

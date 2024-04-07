@@ -21,7 +21,9 @@ class NamedTupleDisplayWidget extends StatelessWidget {
             builder: (context, namedTupleData, child) {
               List<Widget> children = [];
               for (var element in namedTupleData.elements.entries) {
+                String fieldName = element.key;
                 DataItem dataItem = element.value;
+                children.add(Text(fieldName));
                 children.add(DataItemDisplayWidget(dataItem: dataItem));
               }
               return ListView(

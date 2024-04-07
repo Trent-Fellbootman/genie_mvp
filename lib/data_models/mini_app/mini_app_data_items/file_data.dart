@@ -50,7 +50,6 @@ class FileData extends ChangeNotifier {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    assert(other is FileData && other._fileID != null);
 
     return other is FileData && _fileID == other._fileID;
   }

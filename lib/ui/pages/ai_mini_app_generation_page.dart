@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/ai_app_generation_view.dart';
+import '../widgets/mini_app_generation_view.dart';
 
 class AIMiniAppGenerationPage extends StatelessWidget {
   const AIMiniAppGenerationPage({super.key});
@@ -22,7 +22,7 @@ class AIMiniAppGenerationPage extends StatelessWidget {
               ),
             ),
             // AI app generation view
-            const Expanded(child: AIMiniAppGenerationView()),
+            const Expanded(child: MiniAppGenerationView()),
           ],
         ),
       ),

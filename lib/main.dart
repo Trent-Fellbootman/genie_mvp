@@ -4,7 +4,7 @@ import 'package:genie_mvp/ui/pages/ai_mini_app_generation_page.dart';
 import 'package:genie_mvp/ui/pages/login_page.dart';
 import 'package:genie_mvp/ui/pages/mini_app_search_page.dart';
 import 'package:genie_mvp/ui/pages/setup_token_page.dart';
-import 'package:genie_mvp/ui/widgets/ai_app_generation_view.dart';
+import 'package:genie_mvp/ui/widgets/mini_app_generation_view.dart';
 import 'package:genie_mvp/ui/widgets/data_input_widgets/data_item_input_widget.dart';
 import 'package:genie_mvp/ui/widgets/data_input_widgets/file_input_widget.dart';
 import 'package:genie_mvp/ui/widgets/mini_app_search_view.dart';

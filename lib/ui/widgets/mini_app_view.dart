@@ -22,6 +22,20 @@ class MiniAppView extends StatefulWidget {
 class _MiniAppViewState extends State<MiniAppView> {
   _MiniAppViewState();
 
+  bool _isRunning = false;
+
+  Future<MiniAppRunResponse> _runMiniApp(MiniAppRunRequest request) async {
+    setState(() {
+      _isRunning = true;
+    });
+
+    return BackendClient.runMiniApp(request).whenComplete(() {
+      setState(() {
+        _isRunning = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -50,19 +64,22 @@ class _MiniAppViewState extends State<MiniAppView> {
         // input data widget
         DataItemInputWidget(dataItem: inputDataItem),
         // Run button
-        FilledButton(
-            onPressed: () {
-              runResultFutureNotifier.value = BackendClient.runMiniApp(
-                MiniAppRunRequest(
-                    appID: widget.miniAppSpecification.metadata.miniAppID,
-                    inputData: inputDataItem),
-              );
-            },
-            child: Text("运行！",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(color: Theme.of(context).colorScheme.onPrimary))),
+        _isRunning
+            ? LoadingAnimationWidget.fourRotatingDots(
+                color: Theme.of(context).colorScheme.primary,
+                size: 32,
+              )
+            : FilledButton(
+                onPressed: () {
+                  runResultFutureNotifier.value = _runMiniApp(
+                    MiniAppRunRequest(
+                        appID: widget.miniAppSpecification.metadata.miniAppID,
+                        inputData: inputDataItem),
+                  );
+                },
+                child: Text("运行！",
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary))),
         // output title
         Text("输出", style: Theme.of(context).textTheme.headlineMedium),
         // output data widget
@@ -70,11 +87,7 @@ class _MiniAppViewState extends State<MiniAppView> {
           value: runResultFutureNotifier,
           child: Consumer<AtomicNotifier<Future<MiniAppRunResponse>?>>(
             builder: (context, notifier, child) {
-              Widget loadingAnimationWidget =
-                  LoadingAnimationWidget.fourRotatingDots(
-                color: Theme.of(context).colorScheme.primary,
-                size: 32,
-              );
+              Widget placeholder = Container();
               return notifier.value == null
                   ? Container()
                   : FutureBuilder(
@@ -82,7 +95,7 @@ class _MiniAppViewState extends State<MiniAppView> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return loadingAnimationWidget;
+                          return placeholder;
                         }
                         if (snapshot.hasData) {
                           return DataItemDisplayWidget(
@@ -91,7 +104,7 @@ class _MiniAppViewState extends State<MiniAppView> {
                         } else if (snapshot.hasError) {
                           return Text("An error occurred: ${snapshot.error}");
                         } else {
-                          return loadingAnimationWidget;
+                          return placeholder;
                         }
                       },
                     );

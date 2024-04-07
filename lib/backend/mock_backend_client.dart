@@ -2,7 +2,7 @@ import 'package:genie_mvp/backend/backend_base.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
-import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
+import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/login.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
@@ -13,6 +13,8 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 
 final dio = Dio();
+
+const double failRate = 0.1;
 
 class MockBackendClient implements BackendBase {
   static MiniAppSpecification mockMiniAppSpecification = MiniAppSpecification(
@@ -41,9 +43,14 @@ class MockBackendClient implements BackendBase {
   @override
   Future<MiniAppSearchPageResponse> searchPage(
       MiniAppSearchPageRequest request) async {
-    // TODO: remove mock implementation
     MiniAppSpecification mockSpecification = mockMiniAppSpecification;
+    Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
+
+    if (rng.nextDouble() < failRate) {
+      throw Exception("An error occurred.");
+    }
+
     return MiniAppSearchPageResponse(
         miniAppSpecifications:
             List.filled(request.pageSize, mockSpecification));
@@ -54,24 +61,24 @@ class MockBackendClient implements BackendBase {
     // TODO: remove mock implementation
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
-      return MiniAppRunResponse(outputData: request.inputData);
-    } else {
+    if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
+    } else {
+      return MiniAppRunResponse(outputData: request.inputData);
     }
   }
 
   @override
-  Future<AIMiniAppGenerationResponse> aiGenerateMiniApp(
-      AIMiniAppGenerationRequest request) async {
+  Future<MiniAppGenerationResponse> generateMiniApp(
+      MiniAppGenerationRequest request) async {
     // TODO: remove mock implementation
     Random rng = Random();
-    await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
-      return AIMiniAppGenerationResponse(
-          miniAppSpecification: mockMiniAppSpecification);
-    } else {
+    await Future.delayed(const Duration(seconds: 5));
+    if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
+    } else {
+      return MiniAppGenerationResponse(
+          miniAppSpecification: mockMiniAppSpecification);
     }
   }
 
@@ -79,7 +86,7 @@ class MockBackendClient implements BackendBase {
   Future<void> setUpToken() async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
+    if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
     }
   }
@@ -88,7 +95,7 @@ class MockBackendClient implements BackendBase {
   Future<void> login(LoginCredentials loginCredentials) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
+    if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
     }
   }
@@ -97,7 +104,7 @@ class MockBackendClient implements BackendBase {
   Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
+    if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
     }
     return const FileDownloadResponse(filepath: "mock-path.md");
@@ -107,7 +114,7 @@ class MockBackendClient implements BackendBase {
   Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
+    if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
     }
     return const FileUploadResponse(fileID: "mock-id");

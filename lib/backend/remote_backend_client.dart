@@ -4,7 +4,7 @@ import 'package:genie_mvp/backend/backend_base.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
-import 'package:genie_mvp/data_models/backend_api/ai_mini_app_generation.dart';
+import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/login.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
@@ -29,8 +29,8 @@ final dio = Dio();
 const storage = FlutterSecureStorage();
 
 // TODO: replace with real url
-const String apiBaseURL = "http://207.148.88.30:8081";
-// const String apiBaseURL = "http://127.0.0.1:8000";
+// const String apiBaseURL = "http://207.148.88.30:8081";
+const String apiBaseURL = "http://127.0.0.1:8000";
 
 class RemoteBackendClient implements BackendBase {
   Token? token;
@@ -103,17 +103,16 @@ class RemoteBackendClient implements BackendBase {
   }
 
   @override
-  Future<AIMiniAppGenerationResponse> aiGenerateMiniApp(
-      AIMiniAppGenerationRequest request) async {
-    // TODO: remove mock implementation
-    Random rng = Random();
-    await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextBool()) {
-      return AIMiniAppGenerationResponse(
-          miniAppSpecification: mockMiniAppSpecification);
-    } else {
-      throw Exception("An error occurred.");
-    }
+  Future<MiniAppGenerationResponse> generateMiniApp(
+      MiniAppGenerationRequest request) async {
+    final data = {'demand_description': request.demandDescription};
+
+    final Response response = await dio.post('$apiBaseURL/generate-mini-app',
+        data: data, options: Options(headers: getAuthorizationHeader()));
+
+    return MiniAppGenerationResponse(
+        miniAppSpecification: MiniAppSpecification.fromDataTree(
+            response.data['mini_app_specification']));
   }
 
   @override
@@ -178,7 +177,8 @@ class RemoteBackendClient implements BackendBase {
     assert(fileName is String);
 
     // get the download directory
-    final Directory downloadDirectory = await getDownloadsDirectory() ?? Directory('/storage/emulated/0/Download');
+    final Directory downloadDirectory = await getDownloadsDirectory() ??
+        Directory('/storage/emulated/0/Download');
     // create the download directory if it doesn't exist
     if (!(await downloadDirectory.exists())) {
       await downloadDirectory.create(recursive: true);
