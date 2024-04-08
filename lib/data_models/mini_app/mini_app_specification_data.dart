@@ -18,6 +18,7 @@ class MiniAppSpecificationMetadata {
     required this.miniAppID,
     required this.description,
     required this.name,
+    required this.costPerSuccessfulRun,
     required this.likes,
     required this.dislikes,
   });
@@ -25,6 +26,7 @@ class MiniAppSpecificationMetadata {
   final String miniAppID;
   final String name;
   final String description;
+  final double costPerSuccessfulRun;
   final IntegerData likes;
   final IntegerData dislikes;
 }
@@ -45,6 +47,7 @@ class MiniAppSpecification {
         miniAppID: dataTree['mini_app_id'],
         name: dataTree['name'],
         description: dataTree['description'],
+        costPerSuccessfulRun: dataTree['cost_per_successful_run'],
         // TODO: remove mock default value
         likes: IntegerData(value: 0),
         // TODO: remove mock default value

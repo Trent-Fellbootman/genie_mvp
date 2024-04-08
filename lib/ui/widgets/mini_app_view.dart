@@ -77,9 +77,24 @@ class _MiniAppViewState extends State<MiniAppView> {
                         inputData: inputDataItem),
                   );
                 },
-                child: Text("运行！",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary))),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("运行！",
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary)),
+                    Icon(
+                      Icons.monetization_on,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    Text(
+                        widget
+                            .miniAppSpecification.metadata.costPerSuccessfulRun
+                            .toString(),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary))
+                  ],
+                )),
         // output title
         Text("输出", style: Theme.of(context).textTheme.headlineMedium),
         // output data widget

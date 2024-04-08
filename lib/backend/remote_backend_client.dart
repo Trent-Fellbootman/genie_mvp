@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:genie_mvp/backend/backend_base.dart';
+import 'package:genie_mvp/data_models/backend_api/backend_metadata.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
@@ -29,34 +30,11 @@ final dio = Dio();
 const storage = FlutterSecureStorage();
 
 // TODO: replace with real url
-const String apiBaseURL = "http://207.148.88.30:8081";
-// const String apiBaseURL = "http://127.0.0.1:8000";
+// const String apiBaseURL = "http://207.148.88.30:8081";
+const String apiBaseURL = "http://127.0.0.1:8000";
 
 class RemoteBackendClient implements BackendBase {
   Token? token;
-
-  static MiniAppSpecification mockMiniAppSpecification = MiniAppSpecification(
-    inputOutputSpecification: MiniAppInputOutputSpecification(
-      inputTypeDeclaration: DataItemType(
-          basicDataItemType: BasicDataItemType.array,
-          arrayAuxiliaryTypeData: ArrayAuxiliaryTypeData(
-              itemType: DataItemType(
-            basicDataItemType: BasicDataItemType.string,
-          ))),
-      outputTypeDeclaration:
-          DataItemType(basicDataItemType: BasicDataItemType.string),
-    ),
-    metadata: MiniAppSpecificationMetadata(
-      miniAppID: "test-id",
-      name: "随机选择器",
-      description: """随机选择器，选择困难症的福音！
-
-从输入的多个句子中随机选一个输出。
-""",
-      likes: IntegerData(value: 1),
-      dislikes: IntegerData(value: 0),
-    ),
-  );
 
   @override
   Future<MiniAppSearchPageResponse> searchPage(
@@ -221,5 +199,33 @@ class RemoteBackendClient implements BackendBase {
     assert(response.data is String);
 
     return FileUploadResponse(fileID: response.data);
+  }
+
+  @override
+  Future<double> getComputeBalance() async {
+    Response response = await dio.get(
+      '$apiBaseURL/get-compute-balance',
+      options: Options(headers: getAuthorizationHeader()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to get compute balance. Status code: ${response.statusCode}');
+    }
+
+    return (response.data as num).toDouble();
+  }
+
+  @override
+  Future<BackendMetadata> getBackendMetadata() async {
+    Response response = await dio.get('$apiBaseURL/backend-metadata',
+        options: Options(headers: getAuthorizationHeader()));
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to get backend metadata. Status code: ${response.statusCode}');
+    }
+
+    return BackendMetadata.fromDataTree(response.data['backend_metadata']);
   }
 }

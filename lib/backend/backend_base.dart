@@ -1,3 +1,4 @@
+import 'package:genie_mvp/data_models/backend_api/backend_metadata.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
@@ -8,6 +9,10 @@ abstract class BackendBase {
   /// Retrieves a page of items for a search session.
   Future<MiniAppSearchPageResponse> searchPage(
       MiniAppSearchPageRequest request);
+
+  Future<BackendMetadata> getBackendMetadata();
+
+  Future<double> getComputeBalance();
 
   /// Runs a mini app, returning the output data.
   Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request);

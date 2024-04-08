@@ -1,6 +1,7 @@
 import 'package:genie_mvp/backend/backend_base.dart';
 import 'package:genie_mvp/backend/mock_backend_client.dart';
 import 'package:genie_mvp/backend/remote_backend_client.dart';
+import 'package:genie_mvp/data_models/backend_api/backend_metadata.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
@@ -18,6 +19,14 @@ class BackendClient {
 
   static Future<void> login(LoginCredentials loginCredentials) async {
     return await _backend.login(loginCredentials);
+  }
+
+  static Future<BackendMetadata> getBackendMetadata() async {
+    return await _backend.getBackendMetadata();
+  }
+
+  Future<double> getComputeBalance() async {
+    return await _backend.getComputeBalance();
   }
 
   static Future<MiniAppRunResponse> runMiniApp(

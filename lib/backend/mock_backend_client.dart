@@ -1,4 +1,5 @@
 import 'package:genie_mvp/backend/backend_base.dart';
+import 'package:genie_mvp/data_models/backend_api/backend_metadata.dart';
 import 'package:genie_mvp/data_models/backend_api/file_operations.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_run.dart';
 import 'package:genie_mvp/data_models/backend_api/mini_app_search.dart';
@@ -35,6 +36,7 @@ class MockBackendClient implements BackendBase {
 
 从输入的多个句子中随机选一个输出。
 """,
+      costPerSuccessfulRun: 0.1,
       likes: IntegerData(value: 1),
       dislikes: IntegerData(value: 0),
     ),
@@ -118,5 +120,27 @@ class MockBackendClient implements BackendBase {
       throw Exception("An error occurred.");
     }
     return const FileUploadResponse(fileID: "mock-id");
+  }
+
+  @override
+  Future<double> getComputeBalance() async {
+    Random rng = Random();
+    await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextDouble() < failRate) {
+      throw Exception("An error occurred.");
+    }
+
+    return Future.value(5.0);
+  }
+
+  @override
+  Future<BackendMetadata> getBackendMetadata() async {
+    Random rng = Random();
+    await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextDouble() < failRate) {
+      throw Exception("An error occurred.");
+    }
+    return Future.value(
+        const BackendMetadata(costPerSuccessfulMiniAppGeneration: 10.0));
   }
 }

@@ -14,6 +14,7 @@ class MiniAppGenerationView extends StatefulWidget {
 
 class _MiniAppGenerationViewState extends State<MiniAppGenerationView> {
   Future<MiniAppGenerationResponse>? _miniAppGenerationResponseFuture;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isGenerating = false;
   String? _demandDescription;
 
@@ -31,63 +32,111 @@ class _MiniAppGenerationViewState extends State<MiniAppGenerationView> {
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
-        // title
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            "AI小程序生成",
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-        ),
-        // input box
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            onChanged: (value) {
-              _demandDescription = value;
-            },
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "请描述你想要的功能，比如“我有选择困难症，帮我随机选食堂”",
-              hintMaxLines: 2,
-            ),
-            maxLines: null,
-          ),
-        ),
-        // generate button
-        _isGenerating
-            ? Card(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('正在生成小程序，这一般需要30秒-1分钟...'),
-                    LoadingAnimationWidget.fourRotatingDots(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 32.0,
-                    ),
-                  ],
-                ),
-              )
-            : FilledButton(
-                onPressed: () {
-                  setState(() {
-                    if (_demandDescription != null) {
-                      _miniAppGenerationResponseFuture = _generateMiniApp(
-                          MiniAppGenerationRequest(
-                              demandDescription: _demandDescription!));
-                      _isGenerating = true;
-                    }
-                  });
-                },
+        Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // title
+              Align(
+                alignment: Alignment.center,
                 child: Text(
-                  "使用AI生成小程序",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                  "AI小程序生成",
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
               ),
+              // input box
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  onChanged: (value) {
+                    _demandDescription = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '请输入需求描述！';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "请描述你想要的功能，比如“我有选择困难症，帮我随机选食堂”",
+                    hintMaxLines: 2,
+                  ),
+                  maxLines: null,
+                ),
+              ),
+              // generate button
+              _isGenerating
+                  ? Card(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('正在生成小程序，这一般需要30秒-1分钟...'),
+                          LoadingAnimationWidget.fourRotatingDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 32.0,
+                          ),
+                        ],
+                      ),
+                    )
+                  : FilledButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _miniAppGenerationResponseFuture = _generateMiniApp(
+                                MiniAppGenerationRequest(
+                                    demandDescription: _demandDescription!));
+                            _isGenerating = true;
+                          });
+                        }
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "使用AI生成小程序",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary),
+                          ),
+                          FutureBuilder(
+                            future: BackendClient.getBackendMetadata(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.monetization_on,
+                                      color:
+                                          Theme.of(context).colorScheme.onPrimary,
+                                    ),
+                                    Text(
+                                      snapshot.data!
+                                          .costPerSuccessfulMiniAppGeneration
+                                          .toString(),
+                                    )
+                                  ],
+                                );
+                              } else {
+                                return LoadingAnimationWidget.discreteCircle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  size: 16,
+                                );
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+            ],
+          ),
+        ),
         // generated mini app view
         _miniAppGenerationResponseFuture == null
             ? Container()
