@@ -92,7 +92,8 @@ class DataItemType implements DataTreeSerializable, DataTreeDeserializable {
         return DataItem(
             dataItemType: this, stringData: StringData(data: dataTree));
       case BasicDataItemType.file:
-        return DataItem(dataItemType: this, fileData: FileData(fileID: dataTree));
+        return DataItem(
+            dataItemType: this, fileData: FileData(fileID: dataTree));
       case BasicDataItemType.array:
         DataItemType itemType = arrayAuxiliaryTypeData!.itemType;
         List<DataItem> items = (dataTree as List)
@@ -293,5 +294,26 @@ class DataItem extends ChangeNotifier
     assert(dataTree is Map<String, dynamic>);
     DataItemType dataItemType = DataItemType.fromDataTree(dataTree['type']);
     return dataItemType.deserializeDataItem(dataTree['data']);
+  }
+
+  /// Sets all file IDs to null.
+  void invalidateAllFileIDs() {
+    switch (dataItemType.basicDataItemType) {
+      case BasicDataItemType.string:
+        break;
+      case BasicDataItemType.file:
+        fileData!.invalidateFileID();
+        break;
+      case BasicDataItemType.array:
+        for (int i = 0; i < arrayData!.length; i++) {
+          arrayData!.getValue(i)!.invalidateAllFileIDs();
+        }
+        break;
+      case BasicDataItemType.namedTuple:
+        for (DataItem element in namedTupleData!.elements.values) {
+          element.invalidateAllFileIDs();
+        }
+        break;
+    }
   }
 }

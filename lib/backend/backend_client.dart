@@ -58,12 +58,16 @@ class BackendClient {
 
   static Future<MiniAppRunResponse> runMiniApp(
       MiniAppRunRequest request) async {
-    MiniAppRunResponse response = await _backend.runMiniApp(token!, request);
+    try {
+      MiniAppRunResponse response = await _backend.runMiniApp(token!, request);
 
-    // update compute balance
-    _refreshComputeBalance();
+      // update compute balance
+      _refreshComputeBalance();
 
-    return response;
+      return response;
+    } finally {
+      request.inputData.invalidateAllFileIDs();
+    }
   }
 
   static Future<MiniAppSearchPageResponse> searchPage(

@@ -33,6 +33,12 @@ class FileData extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sets the file ID to null.
+  void invalidateFileID() {
+    _fileID = null;
+    notifyListeners();
+  }
+
   @override
   String toString() {
     return 'FileData{filepath: $_filepath, fileID: $_fileID}';
