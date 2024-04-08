@@ -9,6 +9,7 @@ import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart'
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/array_data.dart';
 import 'package:genie_mvp/data_models/data_types/integer_data.dart';
+import 'package:genie_mvp/data_models/data_types/single_value_provider.dart';
 
 import 'dart:math';
 import 'package:dio/dio.dart';
@@ -18,6 +19,11 @@ final dio = Dio();
 const double failRate = 0.1;
 
 class MockBackendClient implements BackendBase {
+  static SingleValueProvider<double?> computeBalanceProvider =
+      SingleValueProvider(
+    value: 5.0,
+  );
+
   static MiniAppSpecification mockMiniAppSpecification = MiniAppSpecification(
     inputOutputSpecification: MiniAppInputOutputSpecification(
       inputTypeDeclaration: DataItemType(
@@ -44,7 +50,7 @@ class MockBackendClient implements BackendBase {
 
   @override
   Future<MiniAppSearchPageResponse> searchPage(
-      MiniAppSearchPageRequest request) async {
+      String token, MiniAppSearchPageRequest request) async {
     MiniAppSpecification mockSpecification = mockMiniAppSpecification;
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
@@ -59,7 +65,8 @@ class MockBackendClient implements BackendBase {
   }
 
   @override
-  Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request) async {
+  Future<MiniAppRunResponse> runMiniApp(
+      String token, MiniAppRunRequest request) async {
     // TODO: remove mock implementation
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
@@ -72,7 +79,7 @@ class MockBackendClient implements BackendBase {
 
   @override
   Future<MiniAppGenerationResponse> generateMiniApp(
-      MiniAppGenerationRequest request) async {
+      String token, MiniAppGenerationRequest request) async {
     // TODO: remove mock implementation
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 5));
@@ -85,25 +92,32 @@ class MockBackendClient implements BackendBase {
   }
 
   @override
-  Future<void> setUpToken() async {
+  Future<String> validateToken(
+    String accessToken,
+  ) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
     if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
+    } else {
+      return 'mock_user';
     }
   }
 
   @override
-  Future<void> login(LoginCredentials loginCredentials) async {
+  Future<String> login(LoginCredentials loginCredentials) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
     if (rng.nextDouble() < failRate) {
       throw Exception("An error occurred.");
+    } else {
+      return 'mock_token';
     }
   }
 
   @override
-  Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
+  Future<FileDownloadResponse> downloadFile(
+      String token, FileDownloadRequest request) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
     if (rng.nextDouble() < failRate) {
@@ -113,7 +127,8 @@ class MockBackendClient implements BackendBase {
   }
 
   @override
-  Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
+  Future<FileUploadResponse> uploadFile(
+      String token, FileUploadRequest request) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
     if (rng.nextDouble() < failRate) {
@@ -123,18 +138,7 @@ class MockBackendClient implements BackendBase {
   }
 
   @override
-  Future<double> getComputeBalance() async {
-    Random rng = Random();
-    await Future.delayed(const Duration(seconds: 1));
-    if (rng.nextDouble() < failRate) {
-      throw Exception("An error occurred.");
-    }
-
-    return Future.value(5.0);
-  }
-
-  @override
-  Future<BackendMetadata> getBackendMetadata() async {
+  Future<BackendMetadata> getBackendMetadata(String token) async {
     Random rng = Random();
     await Future.delayed(const Duration(seconds: 1));
     if (rng.nextDouble() < failRate) {
@@ -142,5 +146,17 @@ class MockBackendClient implements BackendBase {
     }
     return Future.value(
         const BackendMetadata(costPerSuccessfulMiniAppGeneration: 10.0));
+  }
+
+  @override
+  Future<double> getComputeBalance(String token) async {
+    computeBalanceProvider.value = null;
+    Random rng = Random();
+    await Future.delayed(const Duration(seconds: 1));
+    if (rng.nextDouble() < failRate) {
+      throw Exception("An error occurred.");
+    } else {
+      return 5.0;
+    }
   }
 }

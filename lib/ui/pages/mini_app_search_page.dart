@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:genie_mvp/backend/backend_client.dart';
+import 'package:genie_mvp/data_models/data_types/single_value_provider.dart';
+import 'package:genie_mvp/ui/widgets/app_status_bar.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/mini_app_search_view.dart';
 
@@ -12,6 +17,11 @@ class MiniAppSearchPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // top bar for displaying user name and compute balance
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              child: const AppStatusBar(),
+            ),
             // search view
             const Expanded(child: MiniAppSearchView()),
             // AI app generation redirection widget

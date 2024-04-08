@@ -9,13 +9,10 @@ import 'package:genie_mvp/data_models/backend_api/mini_app_generation.dart';
 import 'package:genie_mvp/data_models/backend_api/login.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_specification_data.dart';
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/data_item.dart';
-import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/array_data.dart';
-import 'package:genie_mvp/data_models/data_types/integer_data.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'dart:io';
-import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -32,13 +29,12 @@ const storage = FlutterSecureStorage();
 // TODO: replace with real url
 // const String apiBaseURL = "http://207.148.88.30:8081";
 const String apiBaseURL = "http://127.0.0.1:8000";
+const int computeBalanceRefreshMaxRetries = 5;
 
 class RemoteBackendClient implements BackendBase {
-  Token? token;
-
   @override
   Future<MiniAppSearchPageResponse> searchPage(
-      MiniAppSearchPageRequest request) async {
+      String token, MiniAppSearchPageRequest request) async {
     final searchParameters = request.searchParameters;
     final data = {
       'parameters': {
@@ -51,7 +47,7 @@ class RemoteBackendClient implements BackendBase {
     final Response response = await dio.post(
       '$apiBaseURL/search-page',
       data: data,
-      options: Options(headers: getAuthorizationHeader()),
+      options: Options(headers: getAuthorizationHeader(token)),
     );
 
     List<dynamic> miniAppSpecificationsData =
@@ -67,14 +63,15 @@ class RemoteBackendClient implements BackendBase {
   }
 
   @override
-  Future<MiniAppRunResponse> runMiniApp(MiniAppRunRequest request) async {
+  Future<MiniAppRunResponse> runMiniApp(
+      String token, MiniAppRunRequest request) async {
     final data = {
       'mini_app_id': request.appID,
       'input_data': request.inputData.toDataTree(),
     };
 
     final Response response = await dio.post('$apiBaseURL/run-mini-app',
-        data: data, options: Options(headers: getAuthorizationHeader()));
+        data: data, options: Options(headers: getAuthorizationHeader(token)));
 
     return MiniAppRunResponse(
         outputData: DataItem.fromDataTree(response.data['output_data']));
@@ -82,11 +79,11 @@ class RemoteBackendClient implements BackendBase {
 
   @override
   Future<MiniAppGenerationResponse> generateMiniApp(
-      MiniAppGenerationRequest request) async {
+      String token, MiniAppGenerationRequest request) async {
     final data = {'demand_description': request.demandDescription};
 
     final Response response = await dio.post('$apiBaseURL/generate-mini-app',
-        data: data, options: Options(headers: getAuthorizationHeader()));
+        data: data, options: Options(headers: getAuthorizationHeader(token)));
 
     return MiniAppGenerationResponse(
         miniAppSpecification: MiniAppSpecification.fromDataTree(
@@ -94,26 +91,19 @@ class RemoteBackendClient implements BackendBase {
   }
 
   @override
-  Future<void> setUpToken() async {
-    token = null;
-
-    final String? accessToken = await storage.read(key: 'access-token');
-
-    if (accessToken == null) {
-      throw Exception("Token not found in local storage!");
-    }
-
-    // ensure that the token is valid
-    final Response response = await dio.post("$apiBaseURL/ping",
+  Future<String> validateToken(String accessToken) async {
+    final Response response = await dio.get("$apiBaseURL/ping",
         options: Options(headers: {
           "Authorization": "Bearer $accessToken",
         }));
 
-    token = Token(accessToken: accessToken);
+    assert(response.data is String);
+
+    return response.data;
   }
 
   @override
-  Future<void> login(LoginCredentials loginCredentials) async {
+  Future<String> login(LoginCredentials loginCredentials) async {
     // retrieve a new token
     final Response response = await dio.post(
       "$apiBaseURL/token",
@@ -127,24 +117,21 @@ class RemoteBackendClient implements BackendBase {
     );
     assert(response.data['access_token'] is String);
 
-    // update the token stored in memory
-    token = Token(accessToken: response.data['access_token']);
-
-    // update the token stored on disk
-    await storage.write(key: "access-token", value: token!.accessToken);
+    return response.data['access_token'];
   }
 
-  Map<String, String> getAuthorizationHeader() =>
-      {"Authorization": "Bearer ${token!.accessToken}"};
+  Map<String, String> getAuthorizationHeader(String token) =>
+      {"Authorization": "Bearer $token"};
 
   @override
-  Future<FileDownloadResponse> downloadFile(FileDownloadRequest request) async {
+  Future<FileDownloadResponse> downloadFile(
+      String token, FileDownloadRequest request) async {
     final response = await dio.get(
       '$apiBaseURL/download-file',
       queryParameters: {'file_id': request.fileID},
       options: Options(
         responseType: ResponseType.bytes,
-        headers: getAuthorizationHeader(),
+        headers: getAuthorizationHeader(token),
       ),
     );
 
@@ -172,7 +159,8 @@ class RemoteBackendClient implements BackendBase {
   }
 
   @override
-  Future<FileUploadResponse> uploadFile(FileUploadRequest request) async {
+  Future<FileUploadResponse> uploadFile(
+      String token, FileUploadRequest request) async {
     // Create a FormData object
     FormData formData = FormData.fromMap(
       {
@@ -187,7 +175,7 @@ class RemoteBackendClient implements BackendBase {
     Response response = await dio.post(
       '$apiBaseURL/upload-file', // Replace with your actual URL
       data: formData,
-      options: Options(headers: getAuthorizationHeader()),
+      options: Options(headers: getAuthorizationHeader(token)),
     );
 
     // Check the response status and body
@@ -202,10 +190,23 @@ class RemoteBackendClient implements BackendBase {
   }
 
   @override
-  Future<double> getComputeBalance() async {
+  Future<BackendMetadata> getBackendMetadata(String token) async {
+    Response response = await dio.get('$apiBaseURL/backend-metadata',
+        options: Options(headers: getAuthorizationHeader(token)));
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to get backend metadata. Status code: ${response.statusCode}');
+    }
+
+    return BackendMetadata.fromDataTree(response.data['backend_metadata']);
+  }
+
+  @override
+  Future<double> getComputeBalance(String token) async {
     Response response = await dio.get(
       '$apiBaseURL/get-compute-balance',
-      options: Options(headers: getAuthorizationHeader()),
+      options: Options(headers: getAuthorizationHeader(token)),
     );
 
     if (response.statusCode != 200) {
@@ -214,18 +215,5 @@ class RemoteBackendClient implements BackendBase {
     }
 
     return (response.data as num).toDouble();
-  }
-
-  @override
-  Future<BackendMetadata> getBackendMetadata() async {
-    Response response = await dio.get('$apiBaseURL/backend-metadata',
-        options: Options(headers: getAuthorizationHeader()));
-
-    if (response.statusCode != 200) {
-      throw Exception(
-          'Failed to get backend metadata. Status code: ${response.statusCode}');
-    }
-
-    return BackendMetadata.fromDataTree(response.data['backend_metadata']);
   }
 }

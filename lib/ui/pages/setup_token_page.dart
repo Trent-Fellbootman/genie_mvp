@@ -25,7 +25,7 @@ class _SetUpTokenPageState extends State<SetUpTokenPage> {
 
   Future<void> _checkToken() async {
     try {
-      await BackendClient.setUpToken();
+      await BackendClient.setUpData();
       Navigator.of(context).pushReplacementNamed('/home');
     } catch (e) {
       Navigator.of(context).pushReplacementNamed('/login');
