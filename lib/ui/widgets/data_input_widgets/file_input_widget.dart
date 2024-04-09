@@ -9,22 +9,15 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/file_data.dart';
 
-class FileInputWidget extends StatefulWidget {
+class FileInputWidget extends StatelessWidget {
   const FileInputWidget({super.key, required this.fileDataInstance});
 
   final FileData fileDataInstance;
 
   @override
-  State<FileInputWidget> createState() => _FileInputWidgetState();
-}
-
-class _FileInputWidgetState extends State<FileInputWidget> {
-  bool isUploadingFile = false;
-
-  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<FileData>.value(
-      value: widget.fileDataInstance,
+      value: fileDataInstance,
       child: Consumer<FileData>(
         builder: (context, fileData, child) {
           return Row(
@@ -54,13 +47,20 @@ class _FileInputWidgetState extends State<FileInputWidget> {
                       ),
               ),
               // pick file button
+              // // TODO: hiding the pick file button when the file is being uploaded is a temporary workaround
+              // //  We need this to ensure that we have obtained the file ID when the user picks another file,
+              // //  so that when it does so, we can use the file ID to send a delete file request to the server.
+              // //  Even though we do so, it still doesn't prevent the user from clicking the delete button
+              // //  (e.g., if the file is in a list)
+              // //  in which case we still cannot signal the server to remove the user's file
+              // // fileData.isUploading ? Container() :
               IconButton(
                 onPressed: () {
                   FilePicker.platform.pickFiles().then(
                     (value) {
                       if (value != null) {
                         // user picked file
-                        fileData.setPickedFilePath(value.files.single.path!);
+                        fileData.pickFile(value.files.single.path!);
                       } else {
                         // user did not pick file; do nothing
                       }
@@ -94,7 +94,7 @@ class _FileInputWidgetState extends State<FileInputWidget> {
                       height: 0,
                     );
                   } else if (fileData.fileID == null) {
-                    if (isUploadingFile) {
+                    if (fileData.isUploading) {
                       // file uploading
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -112,36 +112,17 @@ class _FileInputWidgetState extends State<FileInputWidget> {
                       return IconButton(
                         onPressed: () {
                           // upload file
-                          BackendClient.uploadFile(FileUploadRequest(
-                                  filepath: fileData.filepath!))
-                              .then(
-                            (value) {
-                              // file uploaded successfully
-                              fileData.assignUploadedFileID(value.fileID);
-                            },
+                          fileData.startUpload(
                             onError: (error) {
-                              // error occurred when uploading file
                               showDialog(
                                 context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    content: Text(
-                                        'Error occurred when uploading file: $error'),
-                                  );
-                                },
+                                builder: (context) => AlertDialog(
+                                  content: Text(
+                                      '文件上传失败: $error'),
+                                ),
                               );
                             },
-                          ).whenComplete(
-                            () {
-                              setState(() {
-                                isUploadingFile = false;
-                              });
-                            },
                           );
-
-                          setState(() {
-                            isUploadingFile = true;
-                          });
                         },
                         icon: const Column(
                           mainAxisSize: MainAxisSize.min,

@@ -27,8 +27,8 @@ final dio = Dio();
 const storage = FlutterSecureStorage();
 
 // TODO: replace with real url
-// const String apiBaseURL = "http://207.148.88.30:8081";
-const String apiBaseURL = "http://127.0.0.1:8000";
+const String apiBaseURL = "http://207.148.88.30:8081";
+// const String apiBaseURL = "http://127.0.0.1:8000";
 const int computeBalanceRefreshMaxRetries = 5;
 
 class RemoteBackendClient implements BackendBase {

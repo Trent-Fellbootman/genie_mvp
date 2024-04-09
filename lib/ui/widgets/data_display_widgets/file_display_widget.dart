@@ -8,22 +8,15 @@ import 'package:open_file/open_file.dart';
 
 import 'package:genie_mvp/data_models/mini_app/mini_app_data_items/file_data.dart';
 
-class FileDisplayWidget extends StatefulWidget {
+class FileDisplayWidget extends StatelessWidget {
   const FileDisplayWidget({super.key, required this.fileDataInstance});
 
   final FileData fileDataInstance;
 
   @override
-  State<FileDisplayWidget> createState() => _FileDisplayWidgetState();
-}
-
-class _FileDisplayWidgetState extends State<FileDisplayWidget> {
-  bool isDownloadingFile = false;
-
-  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<FileData>.value(
-      value: widget.fileDataInstance,
+      value: fileDataInstance,
       child: Consumer<FileData>(
         builder: (context, fileData, child) {
           return Row(
@@ -65,7 +58,7 @@ class _FileDisplayWidgetState extends State<FileDisplayWidget> {
                     );
                   } else {
                     // file not downloaded or is being downloaded
-                    if (isDownloadingFile) {
+                    if (fileData.isDownloading) {
                       // file downloading
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -82,36 +75,16 @@ class _FileDisplayWidgetState extends State<FileDisplayWidget> {
                       return IconButton(
                         onPressed: () {
                           // download file
-                          BackendClient.downloadFile(
-                                  FileDownloadRequest(fileID: fileData.fileID!))
-                              .then(
-                            (value) {
-                              // file downloaded successfully
-                              fileData.assignDownloadedFilepath(value.filepath);
-                            },
+                          fileData.startDownload(
                             onError: (error) {
-                              // error occurred when uploading file
                               showDialog(
                                 context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    content: Text(
-                                        'Error occurred when downloading file: $error'),
-                                  );
-                                },
+                                builder: (context) => AlertDialog(
+                                  content: Text('下载文件失败: $error'),
+                                ),
                               );
                             },
-                          ).whenComplete(
-                            () {
-                              setState(() {
-                                isDownloadingFile = false;
-                              });
-                            },
                           );
-
-                          setState(() {
-                            isDownloadingFile = true;
-                          });
                         },
                         icon: const Column(
                           mainAxisSize: MainAxisSize.min,
